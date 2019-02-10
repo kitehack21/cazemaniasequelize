@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const premiumImage = sequelize.define('premiumImage', {
-    catalogueId: {
+    premiumId: {
       type: DataTypes.INTEGER
     },
     image: {
@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   premiumImage.associate = function(models) {
     // associations can be defined here
-    // premiumImage.belongsTo(models.premium, { foreignKey: `catalogueId`})
+    premiumImage.belongsTo(models.premium, { foreignKey: `premiumId`})
 
   };
   return premiumImage;

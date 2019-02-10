@@ -1,15 +1,15 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('premiumImages', {
+    return queryInterface.createTable('premia', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      premiumId: {
-        type: Sequelize.INTEGER
+      name: {
+        type: Sequelize.STRING
       },
       image: {
         type: Sequelize.STRING
@@ -25,6 +25,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('premiumImages');
+    return queryInterface.dropTable('premia');
   }
 };

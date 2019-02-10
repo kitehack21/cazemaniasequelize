@@ -14,17 +14,17 @@ module.exports = {
       catalogueId: {
         type: Sequelize.INTEGER
       },
-      brandId: {
-        type: Sequelize.INTEGER
+      brand: {
+        type: Sequelize.STRING
       },
-      typeId: {
-        type: Sequelize.INTEGER
+      model: {
+        type: Sequelize.STRING
       },
-      case_type: {
+      caseType: {
         type: Sequelize.STRING
       },
       amount: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

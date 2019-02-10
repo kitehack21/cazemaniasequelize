@@ -11,6 +11,7 @@ router.get('/', (req, res) => res.status(200).send({
 router.get('/catalogue', catalogue.adminGetCatalogue)
 
 router.post('/addcatalogue', catalogue.addCatalogue)
+router.post('/addpremiumgroup', catalogue.addPremiumGroup)
 router.post('/addpremium', catalogue.addPremiumCatalogue)
 
 module.exports = router;

@@ -4,23 +4,20 @@ module.exports = (sequelize, DataTypes) => {
     userId: {
       type: DataTypes.INTEGER
     },
-    cartType: {
-      type: DataTypes.STRING
-    },
     catalogueId: {
       type: DataTypes.INTEGER
     },
     brand: {
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING
     },
-    type: {
-      type: DataTypes.INTEGER
+    model: {
+      type: DataTypes.STRING
     },
     caseType: {
       type: DataTypes.STRING
     },
     amount: {
-      type: DataTypes.STRING
+      type: DataTypes.INTEGER
     }
   }, {});
   cart.associate = function(models) {

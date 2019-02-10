@@ -12,9 +12,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      catalogueId: {
-        type: Sequelize.INTEGER
-      },
       name: {
         type: Sequelize.STRING
       },
@@ -22,9 +19,6 @@ module.exports = {
         type: Sequelize.STRING
       },
       category: {
-        type: Sequelize.STRING
-      },
-      image: {
         type: Sequelize.STRING
       },
       brand: {

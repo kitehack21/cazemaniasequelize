@@ -50,54 +50,48 @@ module.exports = {
                 const { catalogueId, brand, model, caseType, amount } = req.body
                 return(
                     cart.findOrCreate({
-                        userId: userObj.id,
-                        catalogueId: catalogueId,
-                        brand: brand,
-                        model: model,
-                        caseType: caseType
-                    }, { transaction: t })
-                    .then((cartArr) => {
-                        console.log(cartArr)
+                        where: {
+                            userId: userObj.id,
+                            catalogueId: catalogueId,
+                            brand: brand,
+                            model: model,
+                            caseType: caseType
+                        },
+                        transaction: t 
+                    })
+                    .then((arr) => {
+                        console.log(arr)
                         //checks if "created" is false
-                        if(cartArr[1] === false){
+                        if(arr[1] === false){
+                            console.log(arr[1], "add")
                             return(
-                                cartArr[0].update({
-                                    amount: cartArr[0].amount + amount
-                                })
-                                .then((result) => {
-                                    return result
-                                })
-                                .catch((err) => {
-                                    console.log(err.message)
-                                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                                arr[0].increment({
+                                    amount: amount
+                                }, { transaction: t })
+                                .then((incrementObj) => {
+                                    console.log(incrementObj.amount)//for some reason shows previous amount. cart item still increments as intended
+                                    return incrementObj
                                 })
                             )
                         }
                         else{
+                            console.log(arr[1], "create")
                             return(
-                                cartArr[0].update({
+                                arr[0].update({
                                     amount: amount
-                                })
-                                .then((result) => {
-                                    return result
-                                })
-                                .catch((err) => {
-                                    console.log(err.message)
-                                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                                },{ transaction: t })
+                                .then((createdObj) => {
+                                    return createdObj
                                 })
                             )
                         }
-                    })
-                    .catch((err) => {
-                        console.log(err.message)
-                        return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
                     })
                 )
             })
             .then((result) => {
                 return res.status(200).json({
                     message: 'Add to cart success',
-                    result
+                    // result
                 })
             })
             .catch((err) => {
@@ -112,29 +106,22 @@ module.exports = {
     },
     //Clear User's cart
     clearUserCart(req, res){
-        cart.findAll({
-            where: {
-                userId: req.params.id
-            },
-        })
-        .then((userCartArr) => {
-            sequelize.transaction(function(t){
-                return(
-                    userCartArr.destroy()
-                    .then((res) => {
-                        return res
-                    })
-                )
-            })
-            .then((result) => {
-                return res.status(200).json({
-                    message: 'Clear cart success',
-                    result
+        sequelize.transaction(function(t){
+            return(
+                cart.destroy({
+                    where: {
+                        userId: req.user.id
+                    }
+                }, { transaction: t })
+                .then((result) => {
+                    return result
                 })
-            })
-            .catch((err) => {
-                console.log(err.message)
-                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+            )
+        })
+        .then((result) => {
+            return res.status(200).json({
+                message: 'Clear cart success',
+                result
             })
         })
         .catch((err) => {

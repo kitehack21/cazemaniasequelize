@@ -11,7 +11,7 @@ module.exports = {
     register(req, res){
         var { email, ep, firstname, lastname, gender, phone,
               address, kota, kodepos, destination_code  } = req.body
-        var dp = decrypt(ep) //decrypted password
+        // var dp = decrypt(ep) //decrypted password   
         var results = validate(req.body)
         if(results.length > 0){
             return res.status(422).send({message: "Invalid Form", results})
@@ -21,7 +21,7 @@ module.exports = {
                 user.findOne({where: {email : email}})
                 .then((obj) => {
                     if(obj){
-                        return res.status(200).json({ message: 'Email already exists!' });
+                        return res.status(400).json({ message: 'Email already exists!' });
                     }
                     // // const dp = decrpyt(password)
                     // var defaultProfilePicture = `/files/profile/default.png` //default profile picture path
@@ -29,7 +29,7 @@ module.exports = {
                         return (
                             user.create({
                                 email, 
-                                password: generateHash(dp), 
+                                password: ep, 
                                 firstname, 
                                 lastname,
                                 gender,

@@ -33,8 +33,10 @@ var models = require('./models')
 const {
     adminRouter,
     authRouter,
+    transactionRouter,
     catalogueRouter,
-    linktreeRouter
+    linktreeRouter,
+    destinationRouter
 } = require('./routers')
 
 
@@ -46,10 +48,16 @@ models.sequelize.sync()
     console.log(err, "Something wrong with database update")
 })
 
+app.get('/', function(req,res){
+    res.send("Welcome to Cazemania API v0.01")
+})
+
 app.use("/admin", adminRouter)
 app.use("/auth", authRouter)
 app.use("/catalogue", catalogueRouter)
+app.use("/transaction", transactionRouter)
 app.use("/linktree", linktreeRouter)
+app.use('/destination', destinationRouter)
 
 
 

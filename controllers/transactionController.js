@@ -1,103 +1,11 @@
-const { Sequelize, sequelize, user, cart, transaction, transactionDetails } = require('../models');
+const { Sequelize, sequelize, user, cart, transaction, catalogue, transactionDetail, price } = require('../models');
 const { validate } = require("../helpers").validator;
 var moment = require('moment')
 var fs = require('fs');
 var { uploader, mailer  } = require('../helpers').uploader
 const Op = Sequelize.Op
 
-module.exports = {
-    //Get User's cart
-    getUserCart(req, res){
-        cart.findAll({
-            where: {
-                userId: req.params.id
-            },
-        })
-        .then((result) => {
-            return res.status(200).json({
-                message: 'GET Bestsellers Success',
-                result
-            })
-        })
-        .catch((err) => {
-            console.log(err.message)
-            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-        })
-    },    
-    //Add to User's cart
-    addToCart(req, res){
-        user.findByPk(req.user.id)
-        .then((userObj) => {
-            if(!userObj){
-                return res.status(404).json({
-                    message: "User not found!"
-                })
-            }
-
-            sequelize.transaction(function(t){
-                const { catalogueId, brandId, modelId, case_type, amount } = req.body
-                return(
-                    cart.findOrCreate({
-                        userId: userObj.id,
-                        catalogueId: catalogueId,
-                        brandId: brandId,
-                        model: modelId,
-                        case_type: case_type
-                    }, { transaction: t })
-                    .then((arr) => {
-                        console.log(arr)
-                        //checks if "created" is false
-                        if(arr[1] === false){
-                            return(
-                                arr[0].update({
-                                    amount: arr[0].amount + amount
-                                })
-                                .then((result) => {
-                                    return result
-                                })
-                                .catch((err) => {
-                                    console.log(err.message)
-                                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-                                })
-                            )
-                        }
-                        else{
-                            return(
-                                arr[0].update({
-                                    amount: amount
-                                })
-                                .then((result) => {
-                                    return result
-                                })
-                                .catch((err) => {
-                                    console.log(err.message)
-                                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-                                })
-                            )
-                        }
-                    })
-                    .catch((err) => {
-                        console.log(err.message)
-                        return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-                    })
-                )
-            })
-            .then((result) => {
-                return res.status(200).json({
-                    message: 'Add to cart success',
-                    result
-                })
-            })
-            .catch((err) => {
-                console.log(err.message)
-                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-            })
-        })
-        .catch((err) => {
-            console.log(err.message)
-            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-        })
-    },
+module.exports = {   
     uploadProof(req, res){
         transaction.findByPk(req.params.id)
         .then((transactionObj) => {
@@ -314,7 +222,12 @@ module.exports = {
             cart.findAll({
                 where: {
                     userId: userObj.id
-                }
+                },
+                include: [
+                    {
+                        model: catalogue
+                    }
+                ]
             })
             .then((cartArr) => {
                 if(!cartArr){
@@ -322,78 +235,152 @@ module.exports = {
                         message: "Cart is empty!"
                     })
                 }
-            })
 
-            sequelize.transaction(function(t){
-                const { bankId, address, kota, kodepos, firstname, lastname, phone } = req.body
-                var subtotal = 0
-                var discount = 0
-                var shipping = 0
-                var totalPrice = 0
-                return(
-                    transaction.create({
-                        userId: userObj.id,
-                        bankId: bankId,
-                        purchaseDate: moment(),
-                        subtotal: subtotal,
-                        discount: discount,
-                        shipping: shipping,
-                        totalPrice: totalPrice,
-                        status: "pendingProof",
-                        address: address,
-                        kota: kota,
-                        kodepos: kodepos,
-                        firstname: firstname,
-                        lastname: lastname,
-                        phone: phone
-                    }, { transaction: t })
-                    .then((arr) => {
-                        console.log(arr)
-                        //checks if "created" is false
-                        if(arr[1] === false){
-                            return(
-                                arr[0].update({
-                                    amount: arr[0].amount + amount
-                                })
-                                .then((result) => {
-                                    return result
-                                })
-                                .catch((err) => {
-                                    console.log(err.message)
-                                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-                                })
-                            )
+                price.findAll()
+                .then((priceArr) => {
+
+                    var priceSoft = 0
+                    var priceHard = 0
+                    var priceSoftCustom = 0
+                    var priceHardCustom = 0
+                    var pricePremium = 0
+
+                    priceArr.forEach((item, index) => {
+                        if(item.case_type === "soft"){
+                            priceSoft = item.price
                         }
-                        else{
-                            return(
-                                arr[0].update({
-                                    amount: amount
-                                })
-                                .then((result) => {
-                                    return result
-                                })
-                                .catch((err) => {
-                                    console.log(err.message)
-                                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-                                })
-                            )
+                        if(item.case_type === "hard"){
+                            priceHard = item.price
                         }
+                        if(item.case_type === "customsoft"){
+                            priceSoftCustom = item.price
+                        }
+                        if(item.case_type === "customhard"){
+                            priceHardCustom = item.price
+                        }
+                        if(item.case_type === "premium"){
+                            pricePremium = item.price
+                        }
+                    })
+
+                    if(!(priceSoft && priceHard && priceSoftCustom && priceHardCustom && pricePremium)){
+                        return res.status(404).json({
+                            message: "Missing price(es)!"
+                        })
+                    }
+
+                    sequelize.transaction(function(t){
+                        const { bankId, address, kota, kodepos, firstname, lastname, phone, shipping } = req.body
+                        return(
+                            transaction.create({
+                                userId: userObj.id,
+                                bankId: bankId,
+                                purchaseDate: moment(),
+                                status: "pendingProof",
+                                address: address,
+                                kota: kota,
+                                kodepos: kodepos,
+                                firstname: firstname,
+                                lastname: lastname,
+                                phone: phone
+                            }, { transaction: t })
+                            .then((transactionObj) => {
+                                var hardCount = 0
+                                var softCount = 0
+                                var free = 0
+                                var subtotal = 0
+                                var discount = 0
+                                var totalPrice = 0
+                                var arrItems = []
+                                console.log(cartArr)
+                                cartArr.forEach((item, index) => {
+                                    var price = 0
+                                    if(item.caseType === "soft" && item.catalogue.category === "normal"){
+                                        price = priceSoft
+                                        softCount += item.amount
+                                    }
+                                    if(item.caseType === "hard" && item.catalogue.category === "normal"){
+                                        price = priceHard
+                                        hardCount += item.amount
+                                    }
+                                    if(item.caseType === "soft" && item.catalogue.category === "custom"){
+                                        price = priceSoftCustom
+                                        softCount += item.amount
+                                    }
+                                    if(item.caseType === "hard" && item.catalogue.category === "custom"){
+                                        price = priceHardCustom
+                                        hardCount += item.amount
+                                    }
+                                    if(item.caseType === "premium"){
+                                        price = pricePremium
+                                        hardCount += item.amount
+                                    }
+                                    subtotal += price * item.amount
+                                    arrItems.push({transactionId: transactionObj.id, name: item.catalogue.name, code: item.catalogue.code, category: item.catalogue.category, brand: item.brand, model: item.model, caseType: item.caseType, amount: item.amount, price: price})
+                                })
+                                
+                                free = Math.floor((hardCount+softCount)/3)
+                                console.log(hardCount, softCount, free)
+                                for(i = free; i > 0; i--){
+                                    console.log("loop")
+                                    if(softCount > 0){
+                                        console.log("-soft")
+                                        softCount --
+                                        discount += priceSoft
+                                    }
+                                    else if((softCount === 0) && hardCount > 0){
+                                        console.log("-hard")
+                                        hardCount --
+                                        discount += priceHard
+                                    }
+                                }
+
+                                totalPrice = subtotal - discount + shipping
+
+
+                                return(
+                                    transactionDetail.bulkCreate(arrItems, { transaction: t })
+                                    .then((result) => {
+                                        return (
+                                            transactionObj.update({
+                                                subtotal: subtotal,
+                                                discount: discount,
+                                                shipping: shipping,
+                                                totalPrice: totalPrice
+                                            }, { transaction: t })
+                                            .then((result2) => {
+                                                return(
+                                                    cart.destroy({
+                                                        where: {
+                                                            userId: req.user.id
+                                                        }
+                                                    }, { transaction: t })
+                                                    .then((result3) => {
+                                                        return transactionObj
+                                                    })
+                                                )
+                                            })
+                                        )
+                                    })
+                                )
+                            })
+                        )
+                    })
+                    .then((result) => {
+                        return res.status(200).json({
+                            message: 'Purchase success',
+                            result
+                        })
                     })
                     .catch((err) => {
                         console.log(err.message)
                         return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
                     })
-                )
-            })
-            .then((result) => {
-                return res.status(200).json({
-                    message: 'Add to cart success',
-                    result
                 })
-            })
-            .catch((err) => {
-                console.log(err.message)
-                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                .catch((err) => {
+                    console.log(err.message)
+                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                })
             })
         })
         .catch((err) => {

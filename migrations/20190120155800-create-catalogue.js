@@ -27,6 +27,9 @@ module.exports = {
       category: {
         type: Sequelize.STRING
       },
+      premiumId: {
+        type: Sequelize.INTEGER
+      },
       isDeleted: {
         allowNull: false,
         defaultValue: false,

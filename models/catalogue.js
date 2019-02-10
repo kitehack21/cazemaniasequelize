@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
     category: {
       type: DataTypes.STRING
     },
+    premiumId: {
+      type: DataTypes.INTEGER
+    },
     isDeleted: {
       type: DataTypes.BOOLEAN
     }
@@ -23,7 +26,10 @@ module.exports = (sequelize, DataTypes) => {
   catalogue.associate = function(models) {
     // associations can be defined here
     catalogue.hasMany(models.cart, { foreignKey: `catalogueId`})
-    catalogue.hasMany(models.premiumImage, { foreignKey: `catalogueId`})
+
+    catalogue.belongsTo(models.premium, { foreignKey: `premiumId`})
+
+    catalogue.belongsToMany(models.model, { through: models.premiumModel, foreignKey: `catalogueId` })
 
   };
   return catalogue;

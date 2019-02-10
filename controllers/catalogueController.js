@@ -1,4 +1,4 @@
-const { Sequelize, sequelize, catalogue } = require('../models');
+const { Sequelize, sequelize, catalogue, premium } = require('../models');
 const { validate } = require("../helpers").validator;
 var moment = require('moment')
 var fs = require('fs');
@@ -94,24 +94,38 @@ module.exports = {
         })
     },
     getSimilarProducts(req, res){
-        catalogue.findAll({
-            limit: 5,
-            where: {
-                name: {
-                    [Op.like] : req.query.name
+        catalogue.findByPk(req.params.id)
+        .then((catalogueObj) => {
+            if(!catalogueObj){
+                return res.status(404).json({
+                    message: "Item not found",
+                    error: `Product with ID ${req.params.id} does not exist`
+                })
+            }
+
+            catalogue.findAll({
+                limit: 5,
+                where: {
+                    name: {
+                        [Op.like] : catalogueObj.name
+                    },
+                    id: {
+                        [Op.ne]: req.params.id
+                    }
                 },
-                id: {
-                    [Op.ne]: req.query.id
-                }
-            },
-            order: [
-                ["id", DESC]
-            ]
-        })
-        .then((result) => {
-            return res.status(200).json({
-                message: 'GET Similar Products Success',
-                result
+                order: [
+                    ["id", DESC]
+                ]
+            })
+            .then((result) => {
+                return res.status(200).json({
+                    message: 'GET Similar Products Success',
+                    result
+                })
+            })
+            .catch((err) => {
+                console.log(err.message)
+                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
             })
         })
         .catch((err) => {
@@ -245,6 +259,49 @@ module.exports = {
             return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
         })
     },
+    addPremiumGroup(req, res){
+        const path = '/premium'; //file save path
+        const upload = uploader(path, 'PRM').fields([{ name: 'premiumImage'}]); //uploader(path, 'default prefix')
+        upload(req, res, (err) => {
+            if(err){
+                console.log(err.message)
+                return res.status(500).json({ message: 'Upload image failed !', error: err.message });
+            }
+            
+            const { premiumImage } = req.files;
+            const { name } = req.body
+            const premiumImagePath = premiumImage ? path + '/' + premiumImage[0].filename : null;
+            
+            try {
+                sequelize.transaction(function(t){
+                    return (
+                        premium.create({
+                            name: name,
+                            image: premiumImagePath,
+                        }, { transaction: t })
+                        .then((obj) => {
+                            return obj
+                        })
+                    )
+                })
+                .then((result) => {
+                    return res.status(200).json({
+                        message: 'Premium Group Creation Successful',
+                        result
+                    })
+                })
+                .catch((err) => {
+                    fs.unlinkSync('./public' + premiumImagePath);
+                    console.log(err.message)
+                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                })
+            }
+            catch(err){
+                console.log(err.message)
+                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+            }
+        })
+    },
     addPremiumCatalogue(req, res){
         const path = '/premium'; //file save path
         const upload = uploader(path, 'PRM').fields([{ name: 'premiumImage'}]); //uploader(path, 'default prefix')
@@ -274,7 +331,7 @@ module.exports = {
                 })
                 .then((result) => {
                     return res.status(200).json({
-                        message: 'Catalogue Creation Successful',
+                        message: 'Premium Catalogue Creation Successful',
                         result
                     })
                 })

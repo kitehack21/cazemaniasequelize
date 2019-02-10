@@ -4,9 +4,6 @@ module.exports = (sequelize, DataTypes) => {
     transactionId: {
       type: DataTypes.INTEGER
     },
-    catalogueId: {
-      type: DataTypes.INTEGER
-    },
     name: {
       type: DataTypes.STRING
     },
@@ -14,9 +11,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     category: {
-      type: DataTypes.STRING
-    },
-    image: {
       type: DataTypes.STRING
     },
     brand: {
@@ -38,7 +32,6 @@ module.exports = (sequelize, DataTypes) => {
   transactionDetail.associate = function(models) {
     // associations can be defined here
     transactionDetail.belongsTo(models.transaction, { foreignKey: `transactionId`})
-    transactionDetail.belongsTo(models.catalogue, { foreignKey: `catalogueId`})
   };
   return transactionDetail;
 };
