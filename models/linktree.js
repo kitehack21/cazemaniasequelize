@@ -2,7 +2,8 @@
 module.exports = (sequelize, DataTypes) => {
   const linktree = sequelize.define('linktree', {
     name: DataTypes.STRING,
-    link: DataTypes.STRING
+    link: DataTypes.STRING,
+    image: DataTypes.STRING
   }, {});
   linktree.associate = function(models) {
     // associations can be defined here

@@ -47,14 +47,15 @@ module.exports = {
             }
 
             sequelize.transaction(function(t){
-                const { catalogueId, brand, model, caseType, amount } = req.body
+                const { catalogueId, brand, phonemodel, caseType, amount } = req.body
                 return(
                     cart.findOrCreate({
                         where: {
                             userId: userObj.id,
                             catalogueId: catalogueId,
+                            phonemodelId: phonemodelId,
                             brand: brand,
-                            model: model,
+                            phonemodel: phonemodel,
                             caseType: caseType
                         },
                         transaction: t 

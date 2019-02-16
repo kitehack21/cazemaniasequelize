@@ -41,10 +41,6 @@ module.exports = {
                             .then((result) => {
                                 return result
                             })
-                            .catch((err) => {
-                                fs.unlinkSync('./public' + proofPath);
-                                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-                            })
                         )
                     })
                     .then((result) => {
@@ -95,9 +91,6 @@ module.exports = {
                     }, { transaction: t })
                     .then((result) => {
                         return result
-                    })
-                    .catch((err) => {
-                        return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
                     })
                 )
             })
@@ -316,7 +309,7 @@ module.exports = {
                                         hardCount += item.amount
                                     }
                                     subtotal += price * item.amount
-                                    arrItems.push({transactionId: transactionObj.id, name: item.catalogue.name, code: item.catalogue.code, category: item.catalogue.category, brand: item.brand, model: item.model, caseType: item.caseType, amount: item.amount, price: price})
+                                    arrItems.push({transactionId: transactionObj.id, catalogueId: item.catalogueId, brandId: item.brandId ,name: item.catalogue.name, code: item.catalogue.code, category: item.catalogue.category, brand: item.brand, model: item.model, caseType: item.caseType, amount: item.amount, price: price})
                                 })
                                 
                                 free = Math.floor((hardCount+softCount)/3)

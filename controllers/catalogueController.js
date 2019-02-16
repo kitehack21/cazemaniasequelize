@@ -82,10 +82,7 @@ module.exports = {
         .then((result) => {
             return res.status(200).json({
                 message: 'GET Admin Catalogue Success',
-                result: {
-                    data: result.rows,
-                    count: result.count
-                }
+                result
             })
         })
         .catch((err) => {
@@ -218,14 +215,14 @@ module.exports = {
                 const { normalImage } = req.files;
                 const { code, name } = req.body
                 const normalImagePath = normalImage ? path + '/' + normalImage[0].filename : null;
-                
+                console.log(normalImage, normalImagePath)
                 try {
                     if(normalImagePath && catalogueObj.image){
                         fs.unlinkSync('./public' + catalogueObj.image);
                     }
                     sequelize.transaction(function(t){
                         return (
-                            catalogue.update({
+                            catalogueObj.update({
                                 code: code || catalogueObj.code,
                                 name: name || catalogueObj.name,
                                 image: normalImagePath || catalogueObj.image,
@@ -243,7 +240,9 @@ module.exports = {
                         })
                     })
                     .catch((err) => {
-                        fs.unlinkSync('./public' + normalImagePath);
+                        if(normalImagePath){
+                            fs.unlinkSync('./public' + normalImagePath);
+                        }
                         console.log(err.message)
                         return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
                     })
