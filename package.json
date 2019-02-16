@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.2",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
@@ -22,7 +22,8 @@
     "mysql": "^2.16.0",
     "mysql2": "^1.6.4",
     "nodemailer": "^4.6.8",
-    "sequelize": "^4.41.2",
+    "sequelize": "^4.42.0",
+    "sequelize-cli": "^5.4.0",
     "validator": "^10.9.0"
   },
   "devDependencies": {}
