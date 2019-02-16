@@ -36,7 +36,8 @@ const {
     transactionRouter,
     catalogueRouter,
     linktreeRouter,
-    destinationRouter
+    destinationRouter,
+    testimonyRouter
 } = require('./routers')
 
 
@@ -58,6 +59,7 @@ app.use("/catalogue", catalogueRouter)
 app.use("/transaction", transactionRouter)
 app.use("/linktree", linktreeRouter)
 app.use('/destination', destinationRouter)
+app.use('/testimony', testimonyRouter)
 
 
 

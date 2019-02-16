@@ -4,6 +4,7 @@ const destination = require('./destinationController')
 const catalogue = require('./catalogueController');
 const transaction = require('./transactionController')
 const linktree = require('./linktreeController')
+const testimony = require('./testimonycontroller')
 
 module.exports = {
     user,
@@ -11,5 +12,6 @@ module.exports = {
     catalogue,
     destination,
     transaction,
-    linktree
+    linktree,
+    testimony
 }
