@@ -53,6 +53,7 @@ module.exports = (sequelize, DataTypes) => {
   transaction.associate = function(models) {
     // associations can be defined here
     transaction.belongsTo(models.user, { foreignKey: `userId`})
+    transaction.belongsTo(models.bank, { foreignKey: `bankId`})
     transaction.hasMany(models.transactionDetail, { foreignKey: `transactionId`})
   };
   return transaction;

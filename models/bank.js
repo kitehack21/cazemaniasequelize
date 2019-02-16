@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   bank.associate = function(models) {
     // associations can be defined here
+    bank.hasMany(models.transaction, { foreignKey: 'bankId' })
   };
   return bank;
 };

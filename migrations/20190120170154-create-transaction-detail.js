@@ -12,6 +12,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
+      catalogueId: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      phonemodelId: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
       name: {
         type: Sequelize.STRING
       },

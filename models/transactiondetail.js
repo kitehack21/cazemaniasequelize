@@ -4,6 +4,12 @@ module.exports = (sequelize, DataTypes) => {
     transactionId: {
       type: DataTypes.INTEGER
     },
+    catalogueId: {
+      type: DataTypes.INTEGER
+    },
+    phonemodelId: {
+      type: DataTypes.INTEGER
+    },
     name: {
       type: DataTypes.STRING
     },
@@ -32,6 +38,8 @@ module.exports = (sequelize, DataTypes) => {
   transactionDetail.associate = function(models) {
     // associations can be defined here
     transactionDetail.belongsTo(models.transaction, { foreignKey: `transactionId`})
+    transactionDetail.belongsTo(models.catalogue, { foreignKey: `catalogueId`})
+    transactionDetail.belongsTo(models.phonemodel, { foreignKey: `phonemodelId`})
   };
   return transactionDetail;
 };

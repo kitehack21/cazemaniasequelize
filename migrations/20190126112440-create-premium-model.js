@@ -11,7 +11,7 @@ module.exports = {
       catalogueId: {
         type: Sequelize.INTEGER
       },
-      typeId: {
+      phonemodelId: {
         type: Sequelize.INTEGER
       },
       createdAt: {

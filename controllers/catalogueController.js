@@ -1,4 +1,4 @@
-const { Sequelize, sequelize, catalogue, premium } = require('../models');
+const { Sequelize, sequelize, catalogue, premium, model, premiumModel } = require('../models');
 const { validate } = require("../helpers").validator;
 var moment = require('moment')
 var fs = require('fs');
@@ -346,5 +346,29 @@ module.exports = {
                 return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
             }
         })
-    }
+    },
+    getPremiumStock(req ,res){
+        catalogue.findAll({
+            include: [
+                {
+                    model: model,
+                    attributes: [
+                        'id',
+                        'name'
+                    ],
+                    through: { attributes: ["stock"] }
+                }
+            ],
+        })
+        .then((result) => {
+            return res.status(200).json({
+                message: 'Premium Catalogue Creation Successful',
+                result
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+        })
+    },
 }

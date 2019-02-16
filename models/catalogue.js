@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
 
     catalogue.belongsTo(models.premium, { foreignKey: `premiumId`})
 
-    catalogue.belongsToMany(models.model, { through: models.premiumModel, foreignKey: `catalogueId` })
+    catalogue.belongsToMany(models.phonemodel, { through: models.premiumModel, foreignKey: `catalogueId` })
 
   };
   return catalogue;

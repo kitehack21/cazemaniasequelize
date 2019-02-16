@@ -12,4 +12,8 @@ router.get('/bestsellers', catalogue.bestsellers)
 router.get('/products', catalogue.getCatalogue)
 router.get('/similarproducts', catalogue.getSimilarProducts)
 
+router.get('/premiumstock', catalogue.getPremiumStock)
+
+
+
 module.exports = router;

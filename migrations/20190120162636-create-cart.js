@@ -14,6 +14,9 @@ module.exports = {
       catalogueId: {
         type: Sequelize.INTEGER
       },
+      phonemodelId: {
+        type: Sequelize.INTEGER
+      },
       brand: {
         type: Sequelize.STRING
       },

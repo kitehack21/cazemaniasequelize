@@ -7,6 +7,9 @@ module.exports = (sequelize, DataTypes) => {
     catalogueId: {
       type: DataTypes.INTEGER
     },
+    modelId: {
+      type: DataTypes.INTEGER
+    },
     brand: {
       type: DataTypes.STRING
     },
@@ -24,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     cart.belongsTo(models.user, { foreignKey: `userId`})
     cart.belongsTo(models.catalogue, { foreignKey: `catalogueId`})
+    cart.belongsTo(models.phonemodel, { foreignKey: `phonemodelId`})
   };
   return cart;
 };
