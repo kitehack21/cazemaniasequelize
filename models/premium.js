@@ -6,6 +6,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     image: {
       type: DataTypes.STRING
+    },
+    isDeleted: {
+      type: DataTypes.BOOLEAN
     }
   }, {});
   premium.associate = function(models) {

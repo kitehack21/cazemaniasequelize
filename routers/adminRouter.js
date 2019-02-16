@@ -14,4 +14,6 @@ router.post('/addcatalogue', catalogue.addCatalogue)
 router.post('/addpremiumgroup', catalogue.addPremiumGroup)
 router.post('/addpremium', catalogue.addPremiumCatalogue)
 
+router.put('/catalogue/:id', catalogue.editCatalogue)
+
 module.exports = router;
