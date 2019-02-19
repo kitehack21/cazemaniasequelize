@@ -33,32 +33,32 @@ router.get('/shipping', function(req,res){
       }).end();
 })
 
-router.get('/build', function(req,res){
-    var options = {
-        "method": "GET",
-        "hostname": "api.sicepat.com",
-        "port": null,
-        "path": "/customer/destination",
-        "headers": {
-            "api-key": "54d16bfab958effecbfc849133dc706e",
-            "content-Type": "application/json"
-        }
-    };
-    http.request(options, function (res1) {
-        var chunks = [];
+// router.get('/build', function(req,res){
+//     var options = {
+//         "method": "GET",
+//         "hostname": "api.sicepat.com",
+//         "port": null,
+//         "path": "/customer/destination",
+//         "headers": {
+//             "api-key": "54d16bfab958effecbfc849133dc706e",
+//             "content-Type": "application/json"
+//         }
+//     };
+//     http.request(options, function (res1) {
+//         var chunks = [];
         
-        res1.on("data", function (chunk) {
-            chunks.push(chunk);
-        });
+//         res1.on("data", function (chunk) {
+//             chunks.push(chunk);
+//         });
         
-        res1.on("end", function () {
-            var body = Buffer.concat(chunks);
-            console.log(body)
-            console.log(body.toString());
-            console.log(typeof body)
-            console.log(JSON.parse(body.toString()).sicepat)
-            destination.buildDestinations(req, res, JSON.parse(body.toString()).sicepat.results)
-        });
-    }).end();
-})
+//         res1.on("end", function () {
+//             var body = Buffer.concat(chunks);
+//             console.log(body)
+//             console.log(body.toString());
+//             console.log(typeof body)
+//             console.log(JSON.parse(body.toString()).sicepat)
+//             destination.buildDestinations(req, res, JSON.parse(body.toString()).sicepat.results)
+//         });
+//     }).end();
+// })
 module.exports = router;
