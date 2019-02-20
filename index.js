@@ -39,7 +39,8 @@ const {
     destinationRouter,
     testimonyRouter,
     brandRouter,
-    phonemodelRouter
+    phonemodelRouter,
+    priceRouter
 } = require('./routers')
 
 
@@ -64,6 +65,7 @@ app.use('/destination', destinationRouter)
 app.use('/testimony', testimonyRouter)
 app.use("/brand", brandRouter)
 app.use("/phonemodel", phonemodelRouter)
+app.use("/price", priceRouter)
 
 
 

@@ -6,7 +6,20 @@ var { uploader } = require('../helpers').uploader
 const Op = Sequelize.Op
 
 module.exports = {
-    //Get Links
+    //Get Price
+    getPrice(req, res){
+        price.findAll()
+        .then((result) => {
+            return res.status(200).json({
+                message: "Get price success",
+                result
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+        })
+    },
     editPrice(req, res){
         price.findByPk(req.params.id)
          .then((result) => {

@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     catalogueId: {
       type: DataTypes.INTEGER
     },
-    modelId: {
+    phonemodelId: {
       type: DataTypes.INTEGER
     },
     brand: {

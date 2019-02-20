@@ -47,7 +47,7 @@ module.exports = {
             }
 
             sequelize.transaction(function(t){
-                const { catalogueId, brand, phonemodel, caseType, amount } = req.body
+                const { catalogueId, phonemodelId, brand, model, caseType, amount } = req.body
                 return(
                     cart.findOrCreate({
                         where: {
@@ -55,7 +55,7 @@ module.exports = {
                             catalogueId: catalogueId,
                             phonemodelId: phonemodelId,
                             brand: brand,
-                            phonemodel: phonemodel,
+                            model: model,
                             caseType: caseType
                         },
                         transaction: t 
@@ -66,11 +66,11 @@ module.exports = {
                         if(arr[1] === false){
                             console.log(arr[1], "add")
                             return(
-                                arr[0].increment({
-                                    amount: amount
+                                arr[0].update({
+                                    amount: arr[0].amount + amount
                                 }, { transaction: t })
                                 .then((incrementObj) => {
-                                    console.log(incrementObj.amount)//for some reason shows previous amount. cart item still increments as intended
+                                    console.log(incrementObj.amount)
                                     return incrementObj
                                 })
                             )
@@ -92,7 +92,7 @@ module.exports = {
             .then((result) => {
                 return res.status(200).json({
                     message: 'Add to cart success',
-                    // result
+                    result
                 })
             })
             .catch((err) => {

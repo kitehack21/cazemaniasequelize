@@ -7,6 +7,7 @@ const linktree = require('./linktreeController')
 const testimony = require('./testimonycontroller')
 const brand = require('./brandController')
 const phonemodel = require('./phonemodelController')
+const price = require('./priceController')
 
 module.exports = {
     user,
@@ -17,5 +18,6 @@ module.exports = {
     linktree,
     testimony,
     brand,
-    phonemodel
+    phonemodel,
+    price
 }
