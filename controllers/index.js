@@ -5,6 +5,8 @@ const catalogue = require('./catalogueController');
 const transaction = require('./transactionController')
 const linktree = require('./linktreeController')
 const testimony = require('./testimonycontroller')
+const brand = require('./brandController')
+const phonemodel = require('./phonemodelController')
 
 module.exports = {
     user,
@@ -13,5 +15,7 @@ module.exports = {
     destination,
     transaction,
     linktree,
-    testimony
+    testimony,
+    brand,
+    phonemodel
 }

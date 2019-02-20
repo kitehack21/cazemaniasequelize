@@ -21,7 +21,7 @@ module.exports = {
                 }
             })
             .then((result) => {
-                return res.status(404).json({
+                return res.status(200).json({
                     message: "Get cart success",
                     result
                 })

@@ -1,4 +1,4 @@
-const { Sequelize, sequelize, price } = require('../models');
+const { Sequelize, sequelize, brand } = require('../models');
 const { validate } = require("../helpers").validator;
 var moment = require('moment')
 var fs = require('fs');
@@ -7,11 +7,11 @@ const Op = Sequelize.Op
 
 module.exports = {
     //Get Links
-    editPrice(req, res){
-        price.findByPk(req.params.id)
+    getBrands(req, res){
+        brand.findAll()
          .then((result) => {
             return res.status(200).json({
-                message: "Edit price success",
+                message: "Get brands success",
                 result
             })
          })

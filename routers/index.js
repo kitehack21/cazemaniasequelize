@@ -5,6 +5,8 @@ const transactionRouter = require('./transactionRouter')
 const linktreeRouter = require('./linktreeRouter')
 const destinationRouter = require('./destinationRouter')
 const testimonyRouter = require('./testimonyRouter')
+const brandRouter = require('./brandRouter')
+const phonemodelRouter = require('./phonemodelRouter')
 
 module.exports = {
     adminRouter,
@@ -13,5 +15,7 @@ module.exports = {
     transactionRouter,
     linktreeRouter,
     destinationRouter,
-    testimonyRouter
+    testimonyRouter,
+    brandRouter,
+    phonemodelRouter
 }
