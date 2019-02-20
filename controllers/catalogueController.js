@@ -132,8 +132,8 @@ module.exports = {
     },
     getProduct(req, res){
         catalogue.findByPk(req.params.id)
-        .then((obj) => {
-            if(!obj){
+        .then((result) => {
+            if(!result){
                 return res.status(404).json({
                     message: "Item not found",
                     error: `Product with ID ${req.params.id} does not exist`
