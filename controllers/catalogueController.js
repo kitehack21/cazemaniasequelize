@@ -34,7 +34,7 @@ module.exports = {
     //Get Catalogue with pagination and search parameters
     getCatalogue(req, res){
         catalogue.findAndCountAll({
-            offset: req.query.pagination[0] * 20,
+            offset: req.query.pagination * 20,
             limit: 20,
             where: {
                 category : "normal",
@@ -104,7 +104,7 @@ module.exports = {
                 limit: 5,
                 where: {
                     name: {
-                        [Op.like] : catalogueObj.name
+                        [Op.like] : `%${catalogueObj.name}%`
                     },
                     id: {
                         [Op.ne]: req.params.id
