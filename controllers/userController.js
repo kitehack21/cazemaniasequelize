@@ -50,7 +50,7 @@ module.exports = {
                         )
                     })
                     .then((result) => {
-                        const token = createJWTToken({ id: result.id, role: result.role });
+                        const token = createJWTToken({ id: result.id, category: result.category });
                         return res.status(200).json({
                             message: 'Registration Successful',
                             result: {
@@ -58,7 +58,7 @@ module.exports = {
                                 email: result.email,
                                 firstname: result.firstname,
                                 lastname: result.lastname,
-                                role: result.role,
+                                category: result.category,
                             }
                         })
                     })
@@ -101,7 +101,7 @@ module.exports = {
                             email: result.email,
                             firstname: result.firstname,
                             lastname: result.lastname,
-                            role: result.role,
+                            category: result.category,
                         }
                     });
                 })
@@ -133,7 +133,7 @@ module.exports = {
                             email: result.email,
                             firstname: result.firstname,
                             lastname: result.lastname,
-                            role: result.role,                          
+                            category: result.category,                          
                         }
                     });
                 }
