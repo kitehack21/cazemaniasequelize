@@ -8,6 +8,7 @@ router.get('/', (req, res) => res.status(200).send({
     message: "/catalogue path"
 }))
 
+router.get('/getproduct/:id', catalogue.getProduct)
 router.get('/bestsellers', catalogue.bestsellers)
 router.get('/products', catalogue.getCatalogue)
 router.get('/similarproducts', catalogue.getSimilarProducts)
