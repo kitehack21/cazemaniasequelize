@@ -23,14 +23,14 @@ module.exports = {
                     if(obj){
                         return res.status(400).json({ message: 'Email already exists!' });
                     }
-                    
+
                     sequelize.transaction(function(t){
                         return (
                             user.create({
-                                email, 
-                                password: generateHash(dp), 
                                 firstname, 
                                 lastname,
+                                email, 
+                                password: generateHash(dp), 
                                 gender,
                                 phone,  
                                 address,
