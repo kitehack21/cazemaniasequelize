@@ -11,7 +11,7 @@ module.exports = {
         testimony.findAll()
          .then((result) => {
             return res.status(200).json({
-                message: "Get testimonies success",
+                message: "Get testimony success",
                 result
             })
          })

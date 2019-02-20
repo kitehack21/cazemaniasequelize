@@ -41,12 +41,12 @@ module.exports = {
                 [Op.or]: [
                     {
                         code: {
-                            [Op.like]: req.query.search
+                            [Op.like]: `%${req.query.search}%`
                         }
                     },
                     {
                         name: {
-                            [Op.like]: req.query.search
+                            [Op.like]: `%${req.query.search}%`
                         }
                     }
                 ]
