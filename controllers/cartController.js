@@ -136,4 +136,29 @@ module.exports = {
             return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
         })
     },   
+    clearCartItem(req, res){
+        sequelize.transaction(function(t){
+            return(
+                cart.destroy({
+                    where: {
+                        userId: req.user.id,
+                        id: req.params.id
+                    }
+                }, { transaction: t })
+                .then((result) => {
+                    return result
+                })
+            )
+        })
+        .then((result) => {
+            return res.status(200).json({
+                message: 'Clear cart item success',
+                result
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+        })
+    }
 }
