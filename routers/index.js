@@ -8,6 +8,7 @@ const testimonyRouter = require('./testimonyRouter')
 const brandRouter = require('./brandRouter')
 const phonemodelRouter = require('./phonemodelRouter')
 const priceRouter = require('./priceRouter')
+const bankRouter = require('./bankRouter')
 
 module.exports = {
     adminRouter,
@@ -19,5 +20,6 @@ module.exports = {
     testimonyRouter,
     brandRouter,
     phonemodelRouter,
-    priceRouter
+    priceRouter, 
+    bankRouter
 }

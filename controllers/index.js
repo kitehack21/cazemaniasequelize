@@ -8,6 +8,7 @@ const testimony = require('./testimonycontroller')
 const brand = require('./brandController')
 const phonemodel = require('./phonemodelController')
 const price = require('./priceController')
+const bank = require('./bankController')
 
 module.exports = {
     user,
@@ -19,5 +20,6 @@ module.exports = {
     testimony,
     brand,
     phonemodel,
-    price
+    price,
+    bank
 }
