@@ -1,4 +1,4 @@
-const { Sequelize, sequelize, user, cart } = require('../models');
+const { Sequelize, sequelize, user, cart, catalogue } = require('../models');
 const { validate } = require("../helpers").validator;
 var moment = require('moment')
 var fs = require('fs');
@@ -18,7 +18,12 @@ module.exports = {
             cart.findAll({
                 where: {
                     userId: userObj.id
-                }
+                },
+                include: [
+                    {
+                        model: catalogue
+                    }
+                ]
             })
             .then((result) => {
                 return res.status(200).json({
