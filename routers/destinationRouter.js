@@ -28,7 +28,7 @@ router.get('/shipping', function(req,res){
           var body = Buffer.concat(chunks);
           console.log(body.toString());
           console.log(typeof body)
-          res.status(200).json(body)
+          res.send(body)
         });
       }).end();
 })
