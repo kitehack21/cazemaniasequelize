@@ -9,6 +9,7 @@ router.get('/', (req, res) => res.status(200).send({
 }))
 
 router.get('/getcart', auth, cart.getUserCart)
+router.get('/transactionhistory', auth, transaction.transactionHistory)
 
 
 router.post('/purchase', auth, transaction.createTransaction)

@@ -26,6 +26,9 @@ module.exports = {
       caseType: {
         type: Sequelize.STRING
       },
+      price: {
+        type: Sequelize.INTEGER
+      },
       amount: {
         type: Sequelize.INTEGER
       },
