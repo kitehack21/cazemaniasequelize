@@ -309,7 +309,7 @@ module.exports = {
                                         hardCount += item.amount
                                     }
                                     subtotal += price * item.amount
-                                    arrItems.push({transactionId: transactionObj.id, catalogueId: item.catalogueId, brandId: item.brandId ,name: item.catalogue.name, code: item.catalogue.code, category: item.catalogue.category, brand: item.brand, model: item.model, caseType: item.caseType, amount: item.amount, price: price})
+                                    arrItems.push({transactionId: transactionObj.id, catalogueId: item.catalogueId, phonemodelId: item.phonemodelId, brandId: item.brandId ,name: item.catalogue.name, code: item.catalogue.code, category: item.catalogue.category, brand: item.brand, model: item.model, caseType: item.caseType, amount: item.amount, price: price})
                                 })
                                 
                                 free = Math.floor((hardCount+softCount)/3)
