@@ -19,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
     caseType: {
       type: DataTypes.STRING
     },
+    price: {
+      type: DataTypes.INTEGER
+    },
     amount: {
       type: DataTypes.INTEGER
     }

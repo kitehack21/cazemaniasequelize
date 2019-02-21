@@ -9,6 +9,7 @@ router.get('/', (req, res) => res.status(200).send({
 }))
 
 router.get('/catalogue', catalogue.adminGetCatalogue)
+router.get('/premium', catalogue.adminGetPremium)
 
 router.post('/addcatalogue', catalogue.addCatalogue)
 router.post('/addpremiumgroup', catalogue.addPremiumGroup)

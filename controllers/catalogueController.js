@@ -1,4 +1,4 @@
-const { Sequelize, sequelize, catalogue, premium, model, premiumModel } = require('../models');
+const { Sequelize, sequelize, catalogue, premium, model, premiumModel, premiumImage } = require('../models');
 const { validate } = require("../helpers").validator;
 var moment = require('moment')
 var fs = require('fs');
@@ -90,6 +90,30 @@ module.exports = {
             return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
         })
     },
+    adminGetPremium(req, res){
+        premium.findAll({
+            include: [
+                {
+                    model: catalogue,
+                    required: false
+                },
+                {
+                    model: premiumImage,
+                    required: false
+                }
+            ]
+        })
+        .then((result) => {
+            return res.status(200).json({
+                message: 'GET Admin Premium Success',
+                result
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+        })
+    },
     getSimilarProducts(req, res){
         catalogue.findByPk(req.params.id)
         .then((catalogueObj) => {
@@ -109,7 +133,7 @@ module.exports = {
                     id: {
                         [Op.ne]: req.params.id
                     }
-                },
+                }
             })
             .then((result) => {
                 return res.status(200).json({
