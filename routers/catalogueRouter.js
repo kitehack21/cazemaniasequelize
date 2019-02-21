@@ -11,7 +11,7 @@ router.get('/', (req, res) => res.status(200).send({
 router.get('/getproduct/:id', catalogue.getProduct)
 router.get('/bestsellers', catalogue.bestsellers)
 router.get('/products', catalogue.getCatalogue)
-router.get('/similarproducts', catalogue.getSimilarProducts)
+router.get('/similarproducts/:id', catalogue.getSimilarProducts)
 
 router.get('/premiumstock', catalogue.getPremiumStock)
 
