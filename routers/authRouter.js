@@ -9,6 +9,7 @@ router.get('/', (req, res) => res.status(200).send({
 }))
 
 router.get('/userinfo', auth, user.getUserData)
+router.get('/profile', auth, user.getProfile)
 
 router.post('/register', user.register)
 router.post('/login', user.login)
