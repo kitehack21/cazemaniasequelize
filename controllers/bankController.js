@@ -8,7 +8,7 @@ const Op = Sequelize.Op
 module.exports = {
     //Get Links
     getBanks(req, res){
-        brand.findAll()
+        bank.findAll()
          .then((result) => {
             return res.status(200).json({
                 message: "Get banks success",
