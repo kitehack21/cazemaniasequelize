@@ -162,7 +162,7 @@ module.exports = {
     },
     //Edit User Profile
     editProfile(req, res){
-        var { gender, phone, address, kota, kodepos} = req.body;
+        var { gender, phone, address, kota, kodepos, destination_code} = req.body;
         user.findByPk(req.user.id)
         .then((obj) => {
             if(!obj){
