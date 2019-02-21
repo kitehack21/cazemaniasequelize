@@ -263,19 +263,19 @@ module.exports = {
                     }
 
                     sequelize.transaction(function(t){
-                        const { bankId, address, kota, kodepos, firstname, lastname, phone, shipping } = req.body //change to recipient
+                        const { bankId, recipient, shipping } = req.body
                         return(
                             transaction.create({
                                 userId: userObj.id,
                                 bankId: bankId,
                                 purchaseDate: moment(),
                                 status: "pendingProof",
-                                address: address,
-                                kota: kota,
-                                kodepos: kodepos,
-                                firstname: firstname,
-                                lastname: lastname,
-                                phone: phone
+                                address: recipient.address,
+                                kota: recipient.kota,
+                                kodepos: recipient.kodepos,
+                                firstname: recipient.firstname,
+                                lastname: recipient.lastname,
+                                phone: recipient.phone
                             }, { transaction: t })
                             .then((transactionObj) => {
                                 var hardCount = 0

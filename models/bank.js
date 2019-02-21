@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const bank = sequelize.define('bank', {
-    nama: {
+    name: {
       type: DataTypes.STRING
     },
     accountNumber: {
