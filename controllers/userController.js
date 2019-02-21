@@ -120,9 +120,9 @@ module.exports = {
     getUserData(req, res){
         return(
             user.findByPk(req.user.id)
-            .then((obj) => {
-                const token = createJWTToken({ id: obj.id });
-                if(!obj){
+            .then((userObj) => {
+                const token = createJWTToken({ id: userObj.id });
+                if(!userObj){
                     return res.status(404).json({ message: 'User not found !' });
                 }
                 else{
@@ -130,10 +130,10 @@ module.exports = {
                         message: `GET User Data Successful`,
                         result: {
                             token,
-                            email: result.email,
-                            firstname: result.firstname,
-                            lastname: result.lastname,
-                            category: result.category,                          
+                            email: userObj.email,
+                            firstname: userObj.firstname,
+                            lastname: userObj.lastname,
+                            category: userObj.category,                          
                         }
                     });
                 }
