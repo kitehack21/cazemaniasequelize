@@ -110,9 +110,6 @@ module.exports = {
                         [Op.ne]: req.params.id
                     }
                 },
-                order: [
-                    ["id", DESC]
-                ]
             })
             .then((result) => {
                 return res.status(200).json({
