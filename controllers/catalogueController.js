@@ -111,6 +111,30 @@ module.exports = {
             return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
         })
     },
+    getPremiumDetails(req, res){
+        premium.findByPk(req.params.id, {
+            include: [
+                {
+                    model: catalogue,
+                    required: false
+                },
+                {
+                    model: premiumImage,
+                    required: false
+                }
+            ]
+        })
+        .then((result) => {
+            return res.status(200).json({
+                message: 'GET Admin Premium Details Success',
+                result
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+        })
+    },
     //Get Catalogue for admin
     adminGetCatalogue(req, res){
         catalogue.findAll({
@@ -377,7 +401,9 @@ module.exports = {
                     })
                 })
                 .catch((err) => {
-                    fs.unlinkSync('./public' + premiumImagePath);
+                    if(premiumImagePath){
+                        fs.unlinkSync('./public' + premiumImagePath);
+                    }
                     console.log(err.message)
                     return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
                 })
@@ -389,48 +415,41 @@ module.exports = {
         })
     },
     addPremiumCatalogue(req, res){
-        const path = '/premium'; //file save path
-        const upload = uploader(path, 'PRM').fields([{ name: 'premiumImage'}]); //uploader(path, 'default prefix')
-        upload(req, res, (err) => {
-            if(err){
-                console.log(err.message)
-                return res.status(500).json({ message: 'Upload image failed !', error: err.message });
+        premium.findByPk(req.params.id)
+        .then((premiumObj) => {
+            if(!premiumModel){
+
             }
-            
-            const { premiumImage } = req.files;
-            const { code, name } = req.body
-            const premiumImagePath = premiumImage ? path + '/' + premiumImage[0].filename : null;
-            
-            try {
-                sequelize.transaction(function(t){
-                    return (
-                        catalogue.create({
-                            code: code,
-                            name: name,
-                            image: premiumImagePath,
-                            category: "premium"
-                        }, { transaction: t })
-                        .then((obj) => {
-                            return obj
-                        })
-                    )
-                })
-                .then((result) => {
-                    return res.status(200).json({
-                        message: 'Premium Catalogue Creation Successful',
-                        result
+
+            const { code } = req.body
+            sequelize.transaction(function(t){
+                return (
+                    catalogue.create({
+                        code: code,
+                        name: premiumObj.name,
+                        image: premiumObj.image,
+                        category: "premium"
+                    }, { transaction: t })
+                    .then((obj) => {
+                        return obj
                     })
+                )
+            })
+            .then((result) => {
+                return res.status(200).json({
+                    message: 'Premium Catalogue Creation Successful',
+                    result
                 })
-                .catch((err) => {
-                    fs.unlinkSync('./public' + premiumImagePath);
-                    console.log(err.message)
-                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-                })
-            }
-            catch(err){
+            })
+            .catch((err) => {
                 console.log(err.message)
                 return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-            }
+            })
+
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
         })
     },
     addPremiumImage(req, res){
