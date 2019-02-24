@@ -185,7 +185,17 @@ module.exports = {
             include: [
                 {
                     model: catalogue,
-                    required: false
+                    required: false,
+                    include: [
+                        {
+                            model: model,
+                            attributes: [
+                                'id',
+                                'name'
+                            ],
+                            through: { attributes: ["stock"] }
+                        }
+                    ]
                 },
                 {
                     model: premiumImage,
