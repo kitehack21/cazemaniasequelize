@@ -150,7 +150,8 @@ module.exports = {
                                     brand: brand,
                                     model: model,
                                     caseType: caseType,
-                                    price: price
+                                    price: price,
+                                    amount: amount
                                 })
                             })
                         )
