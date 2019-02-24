@@ -418,20 +418,30 @@ module.exports = {
         premium.findByPk(req.params.id)
         .then((premiumObj) => {
             if(!premiumModel){
-
+                return res.status(404).json({
+                    message: `Cannot find premium group with Id ${req.params.id}`,
+                    error: 'Item not found'
+                })
             }
 
-            const { code } = req.body
+            const { code, phonemodelIds } = req.body
             sequelize.transaction(function(t){
                 return (
                     catalogue.create({
                         code: code,
                         name: premiumObj.name,
                         image: premiumObj.image,
+                        premiumId: premiumObj.id,
                         category: "premium"
                     }, { transaction: t })
-                    .then((obj) => {
-                        return obj
+                    .then((catalogueObj) => {
+                        return(
+                            catalogueObj.setPhonemodels(phonemodelIds,
+                                { transaction: t })
+                            .then((models) => {
+                                return catalogueObj
+                            })
+                        )
                     })
                 )
             })

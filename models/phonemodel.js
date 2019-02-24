@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     phonemodel.hasMany(models.transaction, { foreignKey: 'phonemodelId' })
     phonemodel.hasMany(models.premiumModel, { foreignKey: 'phonemodelId' })
 
-    phonemodel.belongsToMany(models.premium, { through: models.premiumModel, foreignKey: `phonemodelId` })
+    phonemodel.belongsToMany(models.catalogue, { through: models.premiumModel, foreignKey: `phonemodelId` })
   };
   return phonemodel;
 };
