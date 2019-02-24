@@ -111,6 +111,73 @@ module.exports = {
             return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
         })
     },
+    addCustomToCart(req, res){
+        user.findByPk(req.user.id)
+        .then((userObj) => {
+            if(!userObj){
+                return res.status(404).json({
+                    message: "User not found!"
+                })
+            }
+
+            const path = '/custom'; //file save path
+            const upload = uploader(path, 'CST').fields([{ name: 'customImage'}]); //uploader(path, 'default prefix')
+            upload(req, res, (err) => {
+                if(err){
+                    console.log(err.message)
+                    return res.status(500).json({ message: 'Upload image failed !', error: err.message });
+                }
+                
+                const { customImage } = req.files;
+                const { amount, phonemodelId, brand, model, caseType, price } = req.files;
+                const customImagePath = customImage ? path + '/' + customImage[0].filename : null;
+                
+                try {
+                    sequelize.transaction(function(t){
+                        return (
+                            catalogue.create({
+                                code: customImage[0].filename,
+                                name: "Custom Case",
+                                image: customImagePath,
+                                amount: amount,
+                                category: "custom"
+                            }, { transaction: t})
+                            .then((catalogueObj) => {
+                                return cart.create({
+                                    userId: userObj.id,
+                                    catalogueId: catalogueObj.id,
+                                    phonemodelId: phonemodelId,
+                                    brand: brand,
+                                    model: model,
+                                    caseType: caseType,
+                                    price: price
+                                })
+                            })
+                        )
+                    })
+                    .then((result) => {
+                        return res.status(200).json({
+                            message: 'Add Custom To Cart Successful',
+                            result
+                        })
+                    })
+                    .catch((err) => {
+                        fs.unlinkSync('./public' + customImagePath);
+                        console.log(err.message)
+                        return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                    })
+                }
+                catch(err){
+                    console.log(err.message)
+                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                }
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+        })
+    },
     //Clear User's cart
     clearUserCart(req, res){
         sequelize.transaction(function(t){

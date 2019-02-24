@@ -51,7 +51,9 @@ module.exports = {
                     })
                     .catch((err) => {
                         console.log(err.message)
-                        fs.unlinkSync('./public' + proofPath);
+                        if(proofPath){
+                            fs.unlinkSync('./public' + proofPath);
+                        }
                         return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
                     })
                 }

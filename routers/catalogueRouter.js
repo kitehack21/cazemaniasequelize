@@ -13,6 +13,8 @@ router.get('/bestsellers', catalogue.bestsellers)
 router.get('/products', catalogue.getCatalogue)
 router.get('/similarproducts/:id', catalogue.getSimilarProducts)
 
+router.get('/premiumgroups', catalogue.getPremiumGroups)
+router.get('/premiumcatalogue/:id', catalogue.getPremiumCatalogue)
 router.get('/premiumstock', catalogue.getPremiumStock)
 
 

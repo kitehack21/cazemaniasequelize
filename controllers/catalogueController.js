@@ -69,6 +69,48 @@ module.exports = {
             return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
         })
     },
+    getPremiumGroups(req, res){
+        premium.findAndCountAll({
+            offset: req.query.pagination * 20,
+            limit: 20,
+            order: [
+                ["id", "DESC"]
+            ]
+        })
+        .then((result) => {
+            return res.status(200).json({
+                message: 'GET Premium Success',
+                result: {
+                    data: result.rows,
+                    count: result.count
+                }
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+        })
+    },
+    getPremiumCatalogue(req, res){
+        catalogue.findAll({
+            where: {
+                premiumId: req.params.id
+            }
+        })
+        .then((result) => {
+            return res.status(200).json({
+                message: 'GET Premium Catalogue Success',
+                result: {
+                    data: result.rows,
+                    count: result.count
+                }
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+        })
+    },
     //Get Catalogue for admin
     adminGetCatalogue(req, res){
         catalogue.findAll({
