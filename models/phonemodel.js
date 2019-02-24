@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     phonemodel.belongsTo(models.brand, { foreignKey: `brandId`})
 
     phonemodel.hasMany(models.cart, { foreignKey: 'phonemodelId' })
-    phonemodel.hasMany(models.transaction, { foreignKey: 'phonemodelId' })
+    phonemodel.hasMany(models.transactionDetail, { foreignKey: 'phonemodelId' })
     phonemodel.hasMany(models.premiumModel, { foreignKey: 'phonemodelId' })
 
     phonemodel.belongsToMany(models.premium, { through: models.premiumModel, foreignKey: `phonemodelId` })
