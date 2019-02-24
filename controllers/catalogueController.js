@@ -1,4 +1,4 @@
-const { Sequelize, sequelize, catalogue, premium, model, premiumModel, premiumImage } = require('../models');
+const { Sequelize, sequelize, catalogue, premium, phonemodel, premiumModel, premiumImage } = require('../models');
 const { validate } = require("../helpers").validator;
 var moment = require('moment')
 var fs = require('fs');
@@ -119,7 +119,7 @@ module.exports = {
                     required: false,
                     include: [
                         {
-                            model: model,
+                            model: phonemodel,
                             attributes: [
                                 'id',
                                 'name'
@@ -198,7 +198,7 @@ module.exports = {
                     required: false,
                     include: [
                         {
-                            model: model,
+                            model: phonemodel,
                             attributes: [
                                 'id',
                                 'name'
