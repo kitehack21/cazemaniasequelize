@@ -11,9 +11,12 @@ router.get('/', (req, res) => res.status(200).send({
 router.get('/catalogue', catalogue.adminGetCatalogue)
 router.get('/premium', catalogue.adminGetPremium)
 
+router.get('/premiumdetails/:id', catalogue.adminGetPremiumDetails)
+
 router.post('/addcatalogue', catalogue.addCatalogue)
 router.post('/addpremiumgroup', catalogue.addPremiumGroup)
 router.post('/addpremium', catalogue.addPremiumCatalogue)
+router.post('/addpremiumimage/:id', catalogue.addPremiumImage)
 
 router.put('/catalogue/:id', catalogue.editCatalogue)
 

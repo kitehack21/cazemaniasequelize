@@ -156,6 +156,30 @@ module.exports = {
             return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
         })
     },
+    adminGetPremiumDetails(req, res){
+        premium.findByPk(req.params.id, {
+            include: [
+                {
+                    model: catalogue,
+                    required: false
+                },
+                {
+                    model: premiumImage,
+                    required: false
+                }
+            ]
+        })
+        .then((result) => {
+            return res.status(200).json({
+                message: 'GET Admin Premium Details Success',
+                result
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+        })
+    },
     getSimilarProducts(req, res){
         catalogue.findByPk(req.params.id)
         .then((catalogueObj) => {
@@ -399,6 +423,50 @@ module.exports = {
                 })
                 .catch((err) => {
                     fs.unlinkSync('./public' + premiumImagePath);
+                    console.log(err.message)
+                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                })
+            }
+            catch(err){
+                console.log(err.message)
+                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+            }
+        })
+    },
+    addPremiumImage(req, res){
+        const path = '/premium'; //file save path
+        const upload = uploader(path, 'PRM').fields([{ name: 'premium'}]); //uploader(path, 'default prefix')
+        upload(req, res, (err) => {
+            if(err){
+                console.log(err.message)
+                return res.status(500).json({ message: 'Upload image failed !', error: err.message });
+            }
+            
+            const { premium } = req.files;
+            const premiumPath = premium ? path + '/' + premium[0].filename : null;
+            
+            try {
+                sequelize.transaction(function(t){
+                    return (
+                        premiumImage.create({
+                            premiumId: req.params.id,
+                            image: premiumPath,
+                        }, { transaction: t })
+                        .then((obj) => {
+                            return obj
+                        })
+                    )
+                })
+                .then((result) => {
+                    return res.status(200).json({
+                        message: 'Premium Image Add Successful',
+                        result
+                    })
+                })
+                .catch((err) => {
+                    if(premiumPath){
+                        fs.unlinkSync('./public' + premiumPath);
+                    }
                     console.log(err.message)
                     return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
                 })
