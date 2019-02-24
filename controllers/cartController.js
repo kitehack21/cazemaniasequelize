@@ -129,7 +129,7 @@ module.exports = {
                 }
                 
                 const { customImage } = req.files;
-                const { amount, phonemodelId, brand, model, caseType, price } = req.files;
+                const { amount, phonemodelId, brand, model, caseType, price } = req.body;
                 const customImagePath = customImage ? path + '/' + customImage[0].filename : null;
                 
                 try {
