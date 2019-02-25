@@ -346,7 +346,7 @@ module.exports = {
                 const { normalImage } = req.files;
                 const { code, name } = req.body
                 const normalImagePath = normalImage ? path + '/' + normalImage[0].filename : null;
-                console.log(normalImage, normalImagePath)
+                console.log(code, name)
                 try {
                     if(normalImagePath && catalogueObj.image){
                         fs.unlinkSync('./public' + catalogueObj.image);
@@ -524,6 +524,63 @@ module.exports = {
                 console.log(err.message)
                 return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
             }
+        })
+    },
+    editPremiumImage(req, res){
+        premiumImage.findByPk(req.params.id)
+        .then((premiumImageObj) => {
+            if(!premiumImageObj){
+                return res.status(404).json({
+                    message: `Cannot find premium image with Id ${req.params.id}`,
+                    error: 'Item not found'
+                })
+            }
+
+            const path = '/premium'; //file save path
+            const upload = uploader(path, 'PRM').fields([{ name: 'premium'}]); //uploader(path, 'default prefix')
+            upload(req, res, (err) => {
+                if(err){
+                    console.log(err.message)
+                    return res.status(500).json({ message: 'Upload image failed !', error: err.message });
+                }
+                
+                const { premium } = req.files;
+                const premiumPath = premium ? path + '/' + premium[0].filename : null;
+                
+                try {
+                    if(premiumPath && premiumImageObj.image){
+                        fs.unlinkSync('./public' + premiumImageObj.image);
+                    }
+                    
+                    sequelize.transaction(function(t){
+                        return (
+                            premiumImageObj.update({
+                                image: premiumPath,
+                            }, { transaction: t })
+                            .then((obj) => {
+                                return obj
+                            })
+                        )
+                    })
+                    .then((result) => {
+                        return res.status(200).json({
+                            message: 'Premium Image Add Successful',
+                            result
+                        })
+                    })
+                    .catch((err) => {
+                        if(premiumPath){
+                            fs.unlinkSync('./public' + premiumPath);
+                        }
+                        console.log(err.message)
+                        return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                    })
+                }
+                catch(err){
+                    console.log(err.message)
+                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                }
+            })
         })
     },
     getPremiumStock(req ,res){

@@ -20,5 +20,7 @@ router.post('/addpremiumcatalogue/:id', catalogue.addPremiumCatalogue)
 router.post('/addpremiumimage/:id', catalogue.addPremiumImage)
 
 router.put('/catalogue/:id', catalogue.editCatalogue)
+router.put('/phonemodel/:id', phonemodel.editPhoneModel)
+router.put('/premiumimage/:id', catalogue.editPremiumImage)
 
 module.exports = router;
