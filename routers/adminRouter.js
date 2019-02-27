@@ -18,6 +18,7 @@ router.post('/addcatalogue', catalogue.addCatalogue)
 router.post('/addpremiumgroup', catalogue.addPremiumGroup)
 router.post('/addpremiumcatalogue/:id', catalogue.addPremiumCatalogue)
 router.post('/addpremiumimage/:id', catalogue.addPremiumImage)
+router.post('/addphonemodel/:id', phonemodel.addPhoneModel)
 
 router.put('/price/:id', price.editPrice)
 router.put('/bank/:id', bank.editBank)
