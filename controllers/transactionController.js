@@ -1,8 +1,9 @@
-const { Sequelize, sequelize, user, cart, transaction, catalogue, transactionDetail, price } = require('../models');
+const { Sequelize, sequelize, user, bank, cart, transaction, catalogue, transactionDetail, price } = require('../models');
 const { validate } = require("../helpers").validator;
 var moment = require('moment')
 var fs = require('fs');
-var { uploader, mailer  } = require('../helpers').uploader
+var { uploader, } = require('../helpers').uploader
+var { emailer } = require('../helpers').emailer;
 const Op = Sequelize.Op
 
 module.exports = {   
@@ -75,8 +76,15 @@ module.exports = {
                     model: user,
                     attributes: [
                         "email",
-                        "firstName",
-                        "lastName"
+                        "firstname",
+                        "lastname"
+                    ]
+                },
+                {
+                    model: bank,
+                    attributes: [
+                        "name",
+                        "accountNumber"
                     ]
                 }
             ]
@@ -92,39 +100,43 @@ module.exports = {
                         status: "pendingDelivery",
                     }, { transaction: t })
                     .then((result) => {
-                        return result
+                        var subject = "Pesanan Cazemania Anda"
+                        var numlength = transactionObj.id.toString().split("")
+                        var zeroes = ""
+                        for(var i = numlength.length; i < 5; i++){
+                            zeroes += 0
+                        }
+
+                        var replacements = {
+                            Name: `${transactionObj.user.firstname} ${transactionObj.user.lastname}`,
+                            TotalPrice: `Rp. ${transactionObj.totalPrice.toLocaleString()}`,
+                            Reciever: `${transactionObj.firstname} ${transactionObj.lastname}`,
+                            Alamat: transactionObj.address,
+                            Kota: transactionObj.kota,
+                            Kodepos: transactionObj.kodepos,
+                            BankName: transactionObj.bank.name,
+                            BankNumber: transactionObj.bank.accountNumber,
+                            OrderId: `CMW#${zeroes}${transactionObj.id}`
+                        }
+
+                        var attachments = [
+                            {
+                                filename: 'logo.png',
+                                path: './public/others/logo.png',
+                                cid: 'cazemanialogo'
+                            }
+                        ]
+                        try{
+                            return emailer(transactionObj.user.email, subject, "./email/order.html", replacements, attachments, t)
+                        }
+                        catch(err){
+                            console.log(err, "error")
+                            t.rollback()
+                        }
                     })
                 )
             })
             .then((result) => {
-                const { email } = transactionObj.user
-                const mailOptions = {
-                    from: 'cazemania.official@gmail.com', // sender address
-                    to: email, // list of receivers
-                    subject: 'Pembayaran Telah Dikonfirmasi', // Subject line
-                    html: 
-                        `<p>
-                        Hai Kak ________ (nama),
-
-                        Terimakasih karena telah melakukan pembayaran untuk pesanan dengan order ID: ______ (ini kalo di klik langsung ke halaman order dia gitu bisa ga)?
-                        
-                        
-                        Pembayaran kakak sudah kami terima. Harap menunggu kurang lebih 7-14 hari kerja (tidak termasuk tanggal merah & hari Minggu) karena pesanan case akan kami proses cetak terlebih dahulu.
-                        
-                        
-                        
-                        Cheers,
-                        
-                        Admin Cazemania
-                        </p>`
-                }
-                mailer.sendMail(mailOptions, function (err, info) {
-                    if(err)
-                        console.log(err)
-                    else
-                        console.log(info);
-                })
-
                 return res.status(200).json({
                     message: 'Confirmation of Proof Success',
                     result
@@ -132,7 +144,6 @@ module.exports = {
             })
             .catch((err) => {
                 console.log(err.message)
-                fs.unlinkSync('./public' + proofPath);
                 return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
             })
         })
@@ -162,42 +173,23 @@ module.exports = {
                     transactionObj.update({
                         resi: resi,
                         status: "complete"
-                    })
+                    }, { transaction: t })
                     .then((result) => {
                         const { transactionDetails } = transactionObj
-                        var updated = []
-
-                        updated = transactionDetails.map((item, index) => {
-                            catalogue.increment(
-                                {
-                                    sales: item.amount
-                                },
-                                {
-                                    where: {
-                                        catalogueId: item.catalogueId
-                                    }
-                                }
-                            )
-                            .then((result) => {
-                                return result
-                            })
-                            .catch((err) => {
-                                console.log(index)
-                                console.log(err.message)
-                                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-                            })
+                        var promises = []
+                
+                        transactionDetails.map((item, index) => {
+                            promises.push( catalogue.increment({sales: item.amount}, { where: {catalogueId: item.catalogueId}, transaction: t }))
                         })
-
-                        return updated
-                    })
-                    .catch((err) => {
-                        console.log(err.message)
-                        return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                        return Promise.all(promises)
                     })
                 )
             })
             .then((result) => {
-
+                return res.status(200).json({
+                    message: 'Add Resi success',
+                    result
+                })
             })
             .catch((err) => {
                 console.log(err.message)
@@ -260,7 +252,7 @@ module.exports = {
 
                     if(!(priceSoft && priceHard && priceSoftCustom && priceHardCustom && pricePremium)){
                         return res.status(404).json({
-                            message: "Missing price(es)!"
+                            message: "Missing price(s)!"
                         })
                     }
 
@@ -399,6 +391,28 @@ module.exports = {
             return res.status(200).json({
                 message: 'Get transaction history success',
                 result: transactionObj
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+        })
+    },
+    adminGetAllTransactions(req, res){
+        transaction.findAll({
+            include: [
+                {
+                    model: user
+                },
+                {
+                    model: transactionDetail
+                }
+            ]
+        })
+        .then((result) => {
+            return res.status(200).json({
+                message: 'Get transactions success',
+                result
             })
         })
         .catch((err) => {
