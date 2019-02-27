@@ -230,7 +230,6 @@ module.exports = {
                         message: "Cart is empty!"
                     })
                 }
-
                 price.findAll()
                 .then((priceArr) => {
 
@@ -241,20 +240,38 @@ module.exports = {
                     var pricePremium = 0
 
                     priceArr.forEach((item, index) => {
-                        if(item.case_type === "soft"){
-                            priceSoft = item.price
-                        }
-                        if(item.case_type === "hard"){
-                            priceHard = item.price
-                        }
-                        if(item.case_type === "customsoft"){
-                            priceSoftCustom = item.price
-                        }
-                        if(item.case_type === "customhard"){
-                            priceHardCustom = item.price
-                        }
-                        if(item.case_type === "premium"){
-                            pricePremium = item.price
+                        if (userObj.category === 'customer') {
+                            if(item.case_type === "soft"){
+                                priceSoft = item.price
+                            }
+                            if(item.case_type === "hard"){
+                                priceHard = item.price
+                            }
+                            if(item.case_type === "customsoft"){
+                                priceSoftCustom = item.price
+                            }
+                            if(item.case_type === "customhard"){
+                                priceHardCustom = item.price
+                            }
+                            if(item.case_type === "premium"){
+                                pricePremium = item.price
+                            }
+                        } else if (userObj.category === 'reseller') {
+                            if(item.case_type === "soft"){
+                                priceSoft = item.resellerPrice
+                            }
+                            if(item.case_type === "hard"){
+                                priceHard = item.resellerPrice
+                            }
+                            if(item.case_type === "customsoft"){
+                                priceSoftCustom = item.resellerPrice
+                            }
+                            if(item.case_type === "customhard"){
+                                priceHardCustom = item.resellerPrice
+                            }
+                            if(item.case_type === "premium"){
+                                pricePremium = item.resellerPrice
+                            }
                         }
                     })
 
