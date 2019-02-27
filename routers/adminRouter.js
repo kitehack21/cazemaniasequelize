@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-const { user, catalogue, brand, transaction, phonemodel } = require('../controllers');
+const { user, bank, catalogue, brand, transaction, phonemodel, price } = require('../controllers');
 const { auth } = require('../helpers')
 
 
@@ -19,6 +19,8 @@ router.post('/addpremiumgroup', catalogue.addPremiumGroup)
 router.post('/addpremiumcatalogue/:id', catalogue.addPremiumCatalogue)
 router.post('/addpremiumimage/:id', catalogue.addPremiumImage)
 
+router.put('/price/:id', price.editPrice)
+router.put('/bank/:id', bank.editBank)
 router.put('/catalogue/:id', catalogue.editCatalogue)
 router.put('/phonemodel/:id', phonemodel.editPhoneModel)
 router.put('/premiumimage/:id', catalogue.editPremiumImage)
