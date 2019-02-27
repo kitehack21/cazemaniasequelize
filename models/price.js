@@ -6,6 +6,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     price: {
       type: DataTypes.INTEGER
+    },
+    resellerPrice: {
+      type: DataTypes.INTEGER
     }
   }, {});
   price.associate = function(models) {
