@@ -1,5 +1,6 @@
 const { Sequelize, sequelize, user, cart, transaction, catalogue, transactionDetail, price } = require('../models');
 const { validate } = require("../helpers").validator;
+var voucher_codes = require('voucher-code-generator');
 var moment = require('moment')
 var fs = require('fs');
 var { uploader, mailer  } = require('../helpers').uploader
@@ -281,10 +282,18 @@ module.exports = {
                         })
                     }
 
+                    var generateOrderId = voucher_codes.generate({
+                        length: 4,
+                        count: 1,
+                        prefix: `CMW${moment().format('MMYY')}`,
+                        charset: voucher_codes.charset("numbers")
+                    });
+
                     sequelize.transaction(function(t){
                         const { bankId, recipient, shipping } = req.body
                         return(
                             transaction.create({
+                                orderId: generateOrderId[0],
                                 userId: userObj.id,
                                 bankId: bankId,
                                 purchaseDate: moment(),
