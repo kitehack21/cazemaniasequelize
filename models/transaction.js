@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   const transaction = sequelize.define('transaction', {
     orderId: {
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING
     },
     userId: {
       type: DataTypes.INTEGER
