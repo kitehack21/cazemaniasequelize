@@ -38,6 +38,7 @@ module.exports = {
                         return (
                             transactionObj.update({
                                 proof: proof ? proofPath : transactionObj.proof,
+                                status: "pendingConfirmation"
                             }, { transaction: t })
                             .then((result) => {
                                 return result
@@ -419,7 +420,18 @@ module.exports = {
         transaction.findAll({
             include: [
                 {
-                    model: user
+                    model: user,
+                    attributes: [
+                        "email",
+                        "firstname",
+                        "lastname",
+                        "gender",
+                        "phone",
+                        "address",
+                        "kota",
+                        "kodepos",
+                        "destination_code"
+                    ]
                 },
                 {
                     model: transactionDetail
