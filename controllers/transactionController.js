@@ -158,7 +158,12 @@ module.exports = {
         transaction.findByPk(req.params.id,{
             include: [
                 {
-                    model: transactionDetail
+                    model: transactionDetail,
+                    include: [
+                        {
+                            model: catalogue
+                        }
+                    ]
                 }
             ]
         })
@@ -181,7 +186,7 @@ module.exports = {
                         var promises = []
                 
                         transactionDetails.map((item, index) => {
-                            promises.push( catalogue.increment({sales: item.amount}, { where: {catalogueId: item.catalogueId}, transaction: t }))
+                            promises.push( item.catalogue.update({sales: parseInt(item.catalogue.sales) + parseInt(item.amount)}, { transaction: t }))
                         })
                         return Promise.all(promises)
                     })
