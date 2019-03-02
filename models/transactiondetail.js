@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     price: {
-      type: DataTypes.STRING
+      type: DataTypes.INTEGER
     }
   }, {});
   transactionDetail.associate = function(models) {
