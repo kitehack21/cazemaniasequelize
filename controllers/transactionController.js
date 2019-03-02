@@ -95,7 +95,7 @@ module.exports = {
             if(!transactionObj){
                 return res.status(404).json({ message: 'Transaction record does not exist', error: `Transaction with ID ${req.params.id} does not exist` });
             }
-
+            console.log(transactionObj)
             sequelize.transaction(function(t){
                 return (
                     transactionObj.update({
@@ -158,7 +158,7 @@ module.exports = {
         transaction.findByPk(req.params.id,{
             include: [
                 {
-                    model: transactionDetails
+                    model: transactionDetail
                 }
             ]
         })
