@@ -1,6 +1,9 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const transaction = sequelize.define('transaction', {
+    orderId: {
+      type: DataTypes.INTEGER
+    },
     userId: {
       type: DataTypes.INTEGER
     },
