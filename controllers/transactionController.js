@@ -307,7 +307,7 @@ module.exports = {
                                 firstname: recipient.firstname,
                                 lastname: recipient.lastname,
                                 phone: recipient.phone
-                            }, { include: [{model: bank}],transaction: t })
+                            }, { transaction: t })
                             .then((transactionObj) => {
                                 var hardCount = 0
                                 var softCount = 0
@@ -380,34 +380,39 @@ module.exports = {
                                                         }
                                                     }, { transaction: t })
                                                     .then((result3) => {
-                                                        var subject = "Invoice Pesanan Cazemania Anda"
+                                                        return(
+                                                            bank.findByPk(bankId)
+                                                            .then((bankObj) => {
+                                                                var subject = "Invoice Pesanan Cazemania Anda"
                                 
-                                                        var replacements = {
-                                                            Name: `${userObj.firstname} ${userObj.lastname}`,
-                                                            TotalPrice: `Rp. ${transactionObj.totalPrice.toLocaleString()}`,
-                                                            Reciever: `${transactionObj.firstname} ${transactionObj.lastname}`,
-                                                            Alamat: transactionObj.address,
-                                                            Kota: transactionObj.kota,
-                                                            Kodepos: transactionObj.kodepos,
-                                                            BankName: transactionObj.bank.name,
-                                                            BankNumber: transactionObj.bank.accountNumber,
-                                                            OrderId: transactionObj.orderId
-                                                        }
-                                
-                                                        var attachments = [
-                                                            {
-                                                                filename: 'logo.png',
-                                                                path: './public/others/logo.png',
-                                                                cid: 'cazemanialogo'
-                                                            }
-                                                        ]
-                                                        try{
-                                                            return emailer(userObj.email, subject, "./email/order.html", replacements, attachments, t)
-                                                        }
-                                                        catch(err){
-                                                            console.log(err, "error")
-                                                            t.rollback()
-                                                        }
+                                                                var replacements = {
+                                                                    Name: `${userObj.firstname} ${userObj.lastname}`,
+                                                                    TotalPrice: `Rp. ${transactionObj.totalPrice.toLocaleString()}`,
+                                                                    Reciever: `${transactionObj.firstname} ${transactionObj.lastname}`,
+                                                                    Alamat: transactionObj.address,
+                                                                    Kota: transactionObj.kota,
+                                                                    Kodepos: transactionObj.kodepos,
+                                                                    BankName: bankObj.name,
+                                                                    BankNumber: bankObj.accountNumber,
+                                                                    OrderId: transactionObj.orderId
+                                                                }
+                                        
+                                                                var attachments = [
+                                                                    {
+                                                                        filename: 'logo.png',
+                                                                        path: './public/others/logo.png',
+                                                                        cid: 'cazemanialogo'
+                                                                    }
+                                                                ]
+                                                                try{
+                                                                    return emailer(userObj.email, subject, "./email/order.html", replacements, attachments, t)
+                                                                }
+                                                                catch(err){
+                                                                    console.log(err, "error")
+                                                                    t.rollback()
+                                                                }
+                                                            })
+                                                        )
                                                     })
                                                 )
                                             })
