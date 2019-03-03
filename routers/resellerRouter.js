@@ -10,5 +10,4 @@ router.get('/', (req, res) => res.status(200).send({
 
 router.post('/request', auth, reseller.registerReseller)
 
-
 module.exports = router;

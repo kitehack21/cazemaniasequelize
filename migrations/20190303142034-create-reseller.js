@@ -12,6 +12,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       isResolved: {
+        defaultValue: false,
         type: Sequelize.BOOLEAN
       },
       createdAt: {

@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-const { user, bank, catalogue, brand, transaction, phonemodel, price } = require('../controllers');
+const { user, bank, catalogue, brand, transaction, phonemodel, price, reseller } = require('../controllers');
 const { auth } = require('../helpers')
 
 
@@ -14,6 +14,7 @@ router.get('/premium', catalogue.adminGetPremium)
 router.get('/premiumdetails/:id', catalogue.adminGetPremiumDetails)
 router.get('/iphonemodels', brand.getIphones)
 router.get('/transactions',  transaction.adminGetAllTransactions)
+router.get('/resellers', reseller.getAll)
 
 router.post('/addcatalogue', catalogue.addCatalogue)
 router.post('/addpremiumgroup', catalogue.addPremiumGroup)
@@ -30,5 +31,7 @@ router.put('/premiumstock/:id', catalogue.editPremiumStock)
 
 router.put('/addresi/:id', transaction.adminAddResi)
 router.put('/confirmpayment/:id', transaction.confirmProof)
+router.put('/reseller/:id', reseller.adminAccept)
+router.put('/rejectreseller/:id', reseller.adminReject)
 
 module.exports = router;
