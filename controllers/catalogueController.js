@@ -506,7 +506,7 @@ module.exports = {
                         var promises = []
 
                         phonemodelIds.forEach((item, index) => {
-                            promises.push(catalogueObj.addPhonemodel(item.id, {through: {stock: item.stock}}))
+                            promises.push(catalogueObj.addPhonemodel(item.id, {through: {stock: item.stock}, transaction: t}))
                         })
         
                         return Promise.all(promises)

@@ -307,7 +307,7 @@ module.exports = {
                                 firstname: recipient.firstname,
                                 lastname: recipient.lastname,
                                 phone: recipient.phone
-                            }, { transaction: t })
+                            }, { include: [{model: bank}],transaction: t })
                             .then((transactionObj) => {
                                 var hardCount = 0
                                 var softCount = 0
