@@ -26,6 +26,7 @@ router.put('/bank/:id', bank.editBank)
 router.put('/catalogue/:id', catalogue.editCatalogue)
 router.put('/phonemodel/:id', phonemodel.editPhoneModel)
 router.put('/premiumimage/:id', catalogue.editPremiumImage)
+router.put('/premiumstock/:id', catalogue.editPremiumStock)
 
 router.put('/addresi/:id', transaction.adminAddResi)
 router.put('/confirmpayment/:id', transaction.confirmProof)

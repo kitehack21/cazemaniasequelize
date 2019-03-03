@@ -475,7 +475,43 @@ module.exports = {
                 console.log(err.message)
                 return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
             })
-
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+        })
+    },
+    editPremiumStock(req, res){
+        catalogue.findByPk(req.params.id)
+        .then((catalogueObj) => {
+            if(!catalogueObj){
+                return res.status(404).json({
+                    message: `Cannot find catalogue with Id ${req.params.id}`,
+                    error: 'Item not found'
+                })
+            }
+            
+            const { cases } = req.body
+            sequelize.transaction(function(t){
+                return (
+                    catalogueObj.setPhonemodels(cases,{
+                        through: [{stock: 100}]
+                    })
+                    .then((result) => {
+                        return result
+                    })
+                )
+            })
+            .then((result) => {
+                return res.status(200).json({
+                    message: `Edit Stock success`,
+                    result
+                })
+            })
+            .catch((err) => {
+                console.log(err.message)
+                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+            })
         })
         .catch((err) => {
             console.log(err.message)
