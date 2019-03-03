@@ -1,4 +1,4 @@
-const { Sequelize, sequelize, user, bank, cart, transaction, catalogue, transactionDetail, price, phonemodel } = require('../models');
+const { Sequelize, sequelize, user, bank, cart, transaction, catalogue, transactionDetail, price, phonemodel, premiumModel } = require('../models');
 const { validate } = require("../helpers").validator;
 var voucher_codes = require('voucher-code-generator');
 var moment = require('moment')
@@ -165,7 +165,7 @@ module.exports = {
                         transactionDetails.map((item, index) => {
                             promises.push( item.catalogue.update({sales: parseInt(item.catalogue.sales) + parseInt(item.amount)}, { transaction: t }))
                             if(item.category === "premium"){
-                                promises.push( item.catalogue.addPhonemodel(item.phonemodelId, { through: {stock: parseInt(item.catalogue.phonemodel.premiumModel.stock) - parseInt(item.amount)}, transaction: t}))
+                                promises.push( premiumModel.decrement({ stock: item.amount}, { where: {catalogueId: item.catalogueId, phonemodelId: item.phonemodelId}, transaction:t }))
                             }
                         })
 
