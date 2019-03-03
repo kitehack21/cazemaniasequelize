@@ -102,39 +102,7 @@ module.exports = {
                         status: "pendingDelivery",
                     }, { transaction: t })
                     .then((result) => {
-                        var subject = "Pesanan Cazemania Anda"
-                        var numlength = transactionObj.id.toString().split("")
-                        var zeroes = ""
-                        for(var i = numlength.length; i < 5; i++){
-                            zeroes += 0
-                        }
-
-                        var replacements = {
-                            Name: `${transactionObj.user.firstname} ${transactionObj.user.lastname}`,
-                            TotalPrice: `Rp. ${transactionObj.totalPrice.toLocaleString()}`,
-                            Reciever: `${transactionObj.firstname} ${transactionObj.lastname}`,
-                            Alamat: transactionObj.address,
-                            Kota: transactionObj.kota,
-                            Kodepos: transactionObj.kodepos,
-                            BankName: transactionObj.bank.name,
-                            BankNumber: transactionObj.bank.accountNumber,
-                            OrderId: transactionObj.orderId
-                        }
-
-                        var attachments = [
-                            {
-                                filename: 'logo.png',
-                                path: './public/others/logo.png',
-                                cid: 'cazemanialogo'
-                            }
-                        ]
-                        try{
-                            return emailer(transactionObj.user.email, subject, "./email/order.html", replacements, attachments, t)
-                        }
-                        catch(err){
-                            console.log(err, "error")
-                            t.rollback()
-                        }
+                        return result
                     })
                 )
             })
@@ -375,7 +343,39 @@ module.exports = {
                                                         }
                                                     }, { transaction: t })
                                                     .then((result3) => {
-                                                        return transactionObj
+                                                        var subject = "Pesanan Cazemania Anda"
+                                                        var numlength = transactionObj.id.toString().split("")
+                                                        var zeroes = ""
+                                                        for(var i = numlength.length; i < 5; i++){
+                                                            zeroes += 0
+                                                        }
+                                
+                                                        var replacements = {
+                                                            Name: `${userObj.firstname} ${userObj.lastname}`,
+                                                            TotalPrice: `Rp. ${transactionObj.totalPrice.toLocaleString()}`,
+                                                            Reciever: `${transactionObj.firstname} ${transactionObj.lastname}`,
+                                                            Alamat: transactionObj.address,
+                                                            Kota: transactionObj.kota,
+                                                            Kodepos: transactionObj.kodepos,
+                                                            BankName: transactionObj.bank.name,
+                                                            BankNumber: transactionObj.bank.accountNumber,
+                                                            OrderId: `CMW#${zeroes}${transactionObj.id}`
+                                                        }
+                                
+                                                        var attachments = [
+                                                            {
+                                                                filename: 'logo.png',
+                                                                path: './public/others/logo.png',
+                                                                cid: 'cazemanialogo'
+                                                            }
+                                                        ]
+                                                        try{
+                                                            return emailer(transactionObj.user.email, subject, "./email/order.html", replacements, attachments, t)
+                                                        }
+                                                        catch(err){
+                                                            console.log(err, "error")
+                                                            t.rollback()
+                                                        }
                                                     })
                                                 )
                                             })
