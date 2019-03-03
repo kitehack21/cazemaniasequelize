@@ -118,7 +118,7 @@ module.exports = {
                             Kodepos: transactionObj.kodepos,
                             BankName: transactionObj.bank.name,
                             BankNumber: transactionObj.bank.accountNumber,
-                            OrderId: `CMW#${zeroes}${transactionObj.id}`
+                            OrderId: transactionObj.orderId
                         }
 
                         var attachments = [

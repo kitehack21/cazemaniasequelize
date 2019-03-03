@@ -39,6 +39,7 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     user.hasMany(models.cart, { foreignKey: `userId`})
     user.hasMany(models.transaction, { foreignKey: `userId`})
+    user.hasMany(models.reseller, { foreignKey: `userId`})
   };
   return user;
 };

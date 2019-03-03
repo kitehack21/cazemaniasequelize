@@ -36,6 +36,7 @@ const {
     transactionRouter,
     catalogueRouter,
     linktreeRouter,
+    resellerRouter,
     destinationRouter,
     testimonyRouter,
     brandRouter,
@@ -62,6 +63,7 @@ app.use("/auth", authRouter)
 app.use("/catalogue", catalogueRouter)
 app.use("/transaction", transactionRouter)
 app.use("/linktree", linktreeRouter)
+app.use("/reseller", resellerRouter)
 app.use('/destination', destinationRouter)
 app.use('/testimony', testimonyRouter)
 app.use("/brand", brandRouter)
