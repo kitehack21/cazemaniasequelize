@@ -132,6 +132,9 @@ module.exports = {
                             model: catalogue
                         }
                     ]
+                },
+                {
+                    model: user
                 }
             ]
         })
@@ -156,7 +159,32 @@ module.exports = {
                         transactionDetails.map((item, index) => {
                             promises.push( item.catalogue.update({sales: parseInt(item.catalogue.sales) + parseInt(item.amount)}, { transaction: t }))
                         })
+
                         return Promise.all(promises)
+                        .then((result2) => {
+                            var subject = "Pesanan Cazemania Anda Telah Dikirim"
+                                
+                            var replacements = {
+                                Name: `${transactionObj.user.firstname} ${transactionObj.user.lastname}`,
+                                NomorResi: transactionObj.resi,
+                                OrderId: transactionObj.orderId
+                            }
+    
+                            var attachments = [
+                                {
+                                    filename: 'logo.png',
+                                    path: './public/others/logo.png',
+                                    cid: 'cazemanialogo'
+                                }
+                            ]
+                            try{
+                                return emailer(transactionObj.user.email, subject, "./email/order.html", replacements, attachments, t)
+                            }
+                            catch(err){
+                                console.log(err, "error")
+                                t.rollback()
+                            }
+                        })
                     })
                 )
             })
@@ -343,12 +371,7 @@ module.exports = {
                                                         }
                                                     }, { transaction: t })
                                                     .then((result3) => {
-                                                        var subject = "Pesanan Cazemania Anda"
-                                                        var numlength = transactionObj.id.toString().split("")
-                                                        var zeroes = ""
-                                                        for(var i = numlength.length; i < 5; i++){
-                                                            zeroes += 0
-                                                        }
+                                                        var subject = "Invoice Pesanan Cazemania Anda"
                                 
                                                         var replacements = {
                                                             Name: `${userObj.firstname} ${userObj.lastname}`,
@@ -359,7 +382,7 @@ module.exports = {
                                                             Kodepos: transactionObj.kodepos,
                                                             BankName: transactionObj.bank.name,
                                                             BankNumber: transactionObj.bank.accountNumber,
-                                                            OrderId: `CMW#${zeroes}${transactionObj.id}`
+                                                            OrderId: transactionObj.orderId
                                                         }
                                 
                                                         var attachments = [
@@ -370,7 +393,7 @@ module.exports = {
                                                             }
                                                         ]
                                                         try{
-                                                            return emailer(transactionObj.user.email, subject, "./email/order.html", replacements, attachments, t)
+                                                            return emailer(userObj.email, subject, "./email/order.html", replacements, attachments, t)
                                                         }
                                                         catch(err){
                                                             console.log(err, "error")

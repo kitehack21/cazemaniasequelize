@@ -46,7 +46,12 @@ module.exports = {
                     if (error) {
                         // logger.error(error.message);
                         console.log("emailer error", error.message)
-                        return t.rollback()
+                        if(t){
+                            return t.rollback()
+                        }
+                        else{
+                            return false
+                        }
                     }
                     console.log("sent", info)
                     return true;
