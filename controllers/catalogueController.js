@@ -491,10 +491,10 @@ module.exports = {
                 })
             }
             
-            const { cases } = req.body
+            const { phonemodelIds } = req.body
             sequelize.transaction(function(t){
                 return (
-                    catalogueObj.setPhonemodels(cases,{
+                    catalogueObj.setPhonemodels(phonemodelIds,{
                         through: [{stock: 100}]
                     })
                     .then((result) => {

@@ -1,6 +1,6 @@
 const { generateHash, compareHash, decrypt } = require('../helpers').encryption;
 const { createJWTToken } = require('../helpers').jwt;
-const { sequelize, user } = require('../models');
+const { sequelize, user, admin } = require('../models');
 const { validate } = require("../helpers").validator;
 var moment = require('moment')
 var fs = require('fs');
@@ -309,5 +309,44 @@ module.exports = {
             console.log(err.message)
             return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message }); 
         })
-    }
+    },
+    adminLogin(req, res){
+        var { username, ep } = req.body
+        var dp = decrypt(ep) //decrypted password
+        return(
+            admin.findOne({where: {username : username}})
+            .then((obj) => {
+                if(!obj){
+                    console.log('User not found !')
+                    return res.status(404).json({ message: 'User not found !' });
+                }
+                if(!compareHash(dp, obj.password)) {
+                    console.log("Password didn't match!")
+                    return res.status(401).json({ message: "Password didn't match !" });
+                }
+
+                obj.update({
+                    lastLogin: moment()
+                })
+                .then((result) => {
+                    const token = createJWTToken({ id: obj.id });
+                    return res.status(200).json({
+                        message: 'Registration Successful',
+                        result: {
+                            token,
+                            username: result.username,
+                        }
+                    });
+                })
+                .catch((err) => {
+                    console.log(err.message)
+                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                })
+            })
+            .catch((err) => {
+                console.log(err.message)
+                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message }); 
+            })
+        )
+    },
 }
