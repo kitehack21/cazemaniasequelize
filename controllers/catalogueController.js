@@ -482,7 +482,13 @@ module.exports = {
         })
     },
     editPremiumStock(req, res){
-        catalogue.findByPk(req.params.id)
+        catalogue.findByPk(req.params.id,{
+            include: [
+                {
+                    model: phonemodel
+                }
+            ]
+        })
         .then((catalogueObj) => {
             if(!catalogueObj){
                 return res.status(404).json({
@@ -493,12 +499,17 @@ module.exports = {
             
             const { phonemodelIds } = req.body
             sequelize.transaction(function(t){
-                return (
-                    catalogueObj.setPhonemodels(phonemodelIds,{
-                        through: [{stock: 100}]
-                    })
+                return(
+                    catalogueObj.setPhonemodels(null)
                     .then((result) => {
-                        return result
+                        console.log(result)
+                        var promises = []
+
+                        phonemodelIds.forEach((item, index) => {
+                            promises.push(catalogueObj.addPhonemodel(item.id, {through: {stock: item.stock}}))
+                        })
+        
+                        return Promise.all(promises)
                     })
                 )
             })
@@ -623,7 +634,7 @@ module.exports = {
         catalogue.findAll({
             include: [
                 {
-                    model: model,
+                    model: phonemodel,
                     attributes: [
                         'id',
                         'name'
