@@ -409,7 +409,7 @@ module.exports = {
                                                                 }
                                                                 catch(err){
                                                                     console.log(err, "error")
-                                                                    t.rollback()
+                                                                    return false
                                                                 }
                                                             })
                                                         )
