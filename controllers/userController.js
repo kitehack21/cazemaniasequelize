@@ -411,7 +411,7 @@ module.exports = {
             ]
 
             try{
-                emailer(userObj.email, subject, "./emails/resetpassword.html", replacements, attachments)
+                emailer(userObj.email, subject, "./emails/reset.html", replacements, attachments)
                 return res.status(200).json({
                         message: `Request change success`
                     })
