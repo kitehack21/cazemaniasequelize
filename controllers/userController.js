@@ -5,6 +5,7 @@ const { validate } = require("../helpers").validator;
 var moment = require('moment')
 var fs = require('fs');
 var { uploader } = require('../helpers').uploader
+var { emailer } = require('../helpers').emailer;
 
 module.exports = {
     //User Registration
