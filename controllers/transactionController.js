@@ -187,11 +187,11 @@ module.exports = {
                                 }
                             ]
                             try{
-                                return emailer(transactionObj.user.email, subject, "./email/order.html", replacements, attachments, t)
+                                return emailer(transactionObj.user.email, subject, "./email/order.html", replacements, attachments)
                             }
                             catch(err){
                                 console.log(err, "error")
-                                t.rollback()
+                                return false
                             }
                         })
                     })

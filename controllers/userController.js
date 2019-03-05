@@ -349,4 +349,81 @@ module.exports = {
             })
         )
     },
+    newPassword(req, res){
+        var { ep } = req.body;
+        var np = decrypt(ep)    //decrpyted new password
+
+        user.findByPk(req.user.id)
+        .then((userObj) => {
+            if(!userObj){
+                return res.status(404).json({ message: 'User not found !' });
+            }
+
+            if(req.user.hash !== userObj.password){
+                return res.status(400).json({ message: 'This link is no longer valid !' });
+            }
+
+            sequelize.transaction(function(t){
+                return(
+                    userObj.update({
+                        password: generateHash(np)
+                    })
+                    .then((result) => {
+                        return res.status(200).json({
+                            message: `New Password Success`
+                        });
+                    })
+                )
+            })
+            .catch((err) => {
+                console.log(err.message)
+                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message }); 
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message }); 
+        })
+    },
+    requestChangePassword(req, res){
+        user.findOne({
+            where: {
+                email: req.body.email
+            }
+        })
+        .then((userObj) => {
+            if(!userObj){
+                console.log('no user')
+                return res.status(404).json({ message: 'User not found !' });
+            }
+
+            var subject = "Reset Password Account Cazemania"
+            const confirmationToken = createJWTToken({ id: userObj.id, hash: userObj.password });
+            var replacements = {
+                verificationLink: `http://cazemania.id/reset?ide=${confirmationToken}`
+            }
+            var attachments = [
+                {
+                    filename: 'logo.png',
+                    path: './public/others/logo.png',
+                    cid: 'cazemanialogo'
+                },
+            ]
+
+            try{
+                emailer(userObj.email, subject, "./emails/resetpassword.html", replacements, attachments)
+                return res.status(200).json({
+                        message: `Request change success`
+                    })
+            }
+            catch(err){
+                console.log(err, "error")
+                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message }); 
+            }
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message }); 
+        })
+    },
 }

@@ -14,6 +14,9 @@ router.get('/profile', auth, user.getProfile)
 router.post('/register', user.register)
 router.post('/login', user.login)
 
+router.post('/forgotpassword', user.requestChangePassword)
+router.post('/newpassword', auth, user.newPassword)
+
 router.put('/editprofile', auth, user.editProfile)
 router.put('/changepassword', auth, user.changePassword)
 
