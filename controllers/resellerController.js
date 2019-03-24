@@ -11,26 +11,41 @@ module.exports = {
                 })
             }
 
-            console.log('userObj',userObj)
-
-            sequelize.transaction(function(t){
-                return (
-                    reseller.create({
-                        userId: userObj.id
-                    }, { transaction: t })
-                    .then((result) => {
-                        return result
-                    })
-                    .catch((err) => {
-                        console.log(err.message)
-                        return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
-                    })
-                )
+            reseller.findOne({
+                where: {
+                    userId: req.user.id
+                }
             })
-            .then((result) => {
-                return res.status(200).json({
-                    message: 'Request Reseller Successul',
-                    result
+            .then((resellerObj) => {
+                if(resellerObj){
+                    return res.status(404).json({
+                        message: "User already request!"
+                    })
+                }
+
+                sequelize.transaction(function(t){
+                    return (
+                        reseller.create({
+                            userId: userObj.id
+                        }, { transaction: t })
+                        .then((result) => {
+                            return result
+                        })
+                        .catch((err) => {
+                            console.log(err.message)
+                            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                        })
+                    )
+                })
+                .then((result) => {
+                    return res.status(200).json({
+                        message: 'Request Reseller Successul',
+                        result
+                    })
+                })
+                .catch((err) => {
+                    console.log(err.message)
+                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
                 })
             })
             .catch((err) => {
