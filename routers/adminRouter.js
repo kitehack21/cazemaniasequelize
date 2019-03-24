@@ -22,8 +22,9 @@ router.post('/addpremiumcatalogue/:id', catalogue.addPremiumCatalogue)
 router.post('/addpremiumimage/:id', catalogue.addPremiumImage)
 router.post('/addphonemodel/:id', phonemodel.addPhoneModel)
 
-router.post('/register', )
+router.post('/register', user.createAdmin)
 router.post('/login', user.adminLogin)
+router.get('/keeplogin', auth, user.adminKeepLogin)
 
 router.put('/price/:id', price.editPrice)
 router.put('/bank/:id', bank.editBank)
@@ -31,10 +32,12 @@ router.put('/catalogue/:id', catalogue.editCatalogue)
 router.put('/phonemodel/:id', phonemodel.editPhoneModel)
 router.put('/premiumimage/:id', catalogue.editPremiumImage)
 router.put('/premiumstock/:id', catalogue.editPremiumStock)
+router.put('/premiumgroup/:id', catalogue.editPremiumGroup)
 
 router.put('/addresi/:id', transaction.adminAddResi)
 router.put('/confirmpayment/:id', transaction.confirmProof)
 router.put('/reseller/:id', reseller.adminAccept)
 router.put('/rejectreseller/:id', reseller.adminReject)
+
 
 module.exports = router;

@@ -427,4 +427,66 @@ module.exports = {
             return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message }); 
         })
     },
+    createAdmin(req, res){
+
+        const { username, password } = req.body
+        admin.findOne({
+            where: {
+                username: username
+            }
+        })
+        .then((adminObj) => {
+            if(adminObj){
+                return res.status(404).json({ message: 'Username already exists !' });
+            }
+
+            sequelize.transaction(function(t){
+                return(
+                    admin.create({
+                        username: username,
+                        password: generateHash(password)
+                    })
+                    .then((createdAdmin) => {
+                        return createdAdmin
+                    })
+                )
+            })
+            .then((result) => {
+                return res.status(200).json({
+                    message: `Create admin success`,
+                    result
+                })
+            })
+            .catch((err) => {
+                console.log(err.message)
+                return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message }); 
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message }); 
+        })
+    },
+    adminKeepLogin(req, res){
+        admin.findByPk(req.user.id)
+        .then((adminObj) => {
+            if(!adminObj){
+                console.log('no user')
+                return res.status(404).json({ message: 'User not found !' });
+            }
+
+            const token = createJWTToken({ id: adminObj.id });
+            return res.status(200).json({
+                message: `Keep login success`,
+                result: {
+                    token,
+                    username: adminObj.username
+                }
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message }); 
+        })
+    }
 }

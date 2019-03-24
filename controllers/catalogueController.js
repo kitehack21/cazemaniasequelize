@@ -434,6 +434,65 @@ module.exports = {
             }
         })
     },
+    editPremiumGroup(req, res){
+        premium.findByPk(req.params.id)
+        .then(premiumObj => {
+            if(!premiumObj){
+                return res.status(404).json({
+                    message: "Item not found",
+                    error: `Premium with ID ${req.params.id} does not exist`
+                })
+            }
+
+            const path = '/premium'; //file save path
+            const upload = uploader(path, 'PRM').fields([{ name: 'premiumImage'}]); //uploader(path, 'default prefix')
+            upload(req, res, (err) => {
+                if(err){
+                    console.log(err.message)
+                    return res.status(500).json({ message: 'Upload image failed !', error: err.message });
+                }
+                
+                const { premiumImage } = req.files;
+                const { name } = req.body
+                const premiumImagePath = premiumImage ? path + '/' + premiumImage[0].filename : null;
+                
+                try {
+                    sequelize.transaction(function(t){
+                        return (
+                            premiumObj.update({
+                                name: name || premiumObj.name,
+                                image: premiumImagePath || premiumObj.image,
+                            }, { transaction: t })
+                            .then((obj) => {
+                                return obj
+                            })
+                        )
+                    })
+                    .then((result) => {
+                        return res.status(200).json({
+                            message: 'Premium Group Edit Successful',
+                            result
+                        })
+                    })
+                    .catch((err) => {
+                        if(premiumImagePath){
+                            fs.unlinkSync('./public' + premiumImagePath);
+                        }
+                        console.log(err.message)
+                        return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                    })
+                }
+                catch(err){
+                    console.log(err.message)
+                    return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+                }
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+            return res.status(500).json({ message: "There's an error on the server. Please contact the administrator.", error: err.message });
+        })
+    },
     addPremiumCatalogue(req, res){
         premium.findByPk(req.params.id)
         .then((premiumObj) => {
@@ -497,19 +556,26 @@ module.exports = {
                 })
             }
             
-            const { phonemodelIds } = req.body
+            const { phonemodelIds, code } = req.body
             sequelize.transaction(function(t){
                 return(
-                    catalogueObj.setPhonemodels(null)
-                    .then((result) => {
-                        console.log(result)
-                        var promises = []
+                    catalogueObj.update({
+                        code: code || catalogueObj.code
+                    })
+                    .then((updatedCatalogueObj) => {
+                        return(
+                            catalogueObj.setPhonemodels(null)
+                            .then((result) => {
+                                console.log(result)
+                                var promises = []
 
-                        phonemodelIds.forEach((item, index) => {
-                            promises.push(catalogueObj.addPhonemodel(item.id, {through: {stock: item.stock}, transaction: t}))
-                        })
-        
-                        return Promise.all(promises)
+                                phonemodelIds.forEach((item, index) => {
+                                    promises.push(catalogueObj.addPhonemodel(item.id, {through: {stock: item.stock}, transaction: t}))
+                                })
+                
+                                return Promise.all(promises)
+                            })
+                        )
                     })
                 )
             })

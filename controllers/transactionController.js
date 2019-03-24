@@ -285,18 +285,18 @@ module.exports = {
                         })
                     }
 
-                    var generateOrderId = voucher_codes.generate({
-                        length: 4,
-                        count: 1,
-                        prefix: `CMW${moment().format('MMYY')}`,
-                        charset: voucher_codes.charset("numbers")
-                    });
+                    // var generateOrderId = voucher_codes.generate({
+                    //     length: 4,
+                    //     count: 1,
+                    //     prefix: `CMW${moment().format('MMYY')}`,
+                    //     charset: voucher_codes.charset("numbers")
+                    // });
 
                     sequelize.transaction(function(t){
                         const { bankId, recipient, shipping } = req.body
                         return(
                             transaction.create({
-                                orderId: generateOrderId[0],
+                                // orderId: generateOrderId[0],
                                 userId: userObj.id,
                                 bankId: bankId,
                                 purchaseDate: moment(),
@@ -367,6 +367,7 @@ module.exports = {
                                     .then((result) => {
                                         return (
                                             transactionObj.update({
+                                                orderId: `CMW${transactionObj.id}`,
                                                 subtotal: subtotal,
                                                 discount: discount,
                                                 shipping: shipping,
@@ -405,7 +406,7 @@ module.exports = {
                                                                     }
                                                                 ]
                                                                 try{
-                                                                    return emailer(userObj.email, subject, "./email/order.html", replacements, attachments, t)
+                                                                    return emailer(userObj.email, subject, "./email/order.html", replacements, attachments)
                                                                 }
                                                                 catch(err){
                                                                     console.log(err, "error")
