@@ -1,6 +1,6 @@
 module.exports = {
-	"port": "80",
+	"port": "8080",
 	"jwtKey": "tambunbekasi",
 	"appKey": "cazemania123",
-	"hostName": "http://localhost:80"
+	"hostName": "http://localhost:8080"
 }
