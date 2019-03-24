@@ -19,7 +19,6 @@ router.get('/shipping', function(req,res){
       
       http.request(options, function (res1) {
         var chunks = [];
-      
         res1.on("data", function (chunk) {
           chunks.push(chunk);
         });
