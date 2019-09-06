@@ -1,5 +1,5 @@
 {
-  "name": "purwadhika-api",
+  "name": "cazemania sequelize",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -26,7 +26,7 @@
     "express-bearer-token": "^2.2.0",
     "express-rate-limit": "^3.4.0",
     "forever": "^0.15.3",
-    "handlebars": "^4.1.0",
+    "handlebars": "^4.2.0",
     "install": "^0.12.2",
     "jsonwebtoken": "^8.3.0",
     "moment": "^2.22.2",
@@ -35,8 +35,8 @@
     "mysql": "^2.16.0",
     "mysql2": "^1.6.4",
     "nodemailer": "^4.7.0",
-    "sequelize": "^4.42.0",
-    "sequelize-cli": "^5.4.0",
+    "sequelize": "^4.44.3",
+    "sequelize-cli": "^5.5.1",
     "validator": "^10.9.0",
     "voucher-code-generator": "^1.1.1"
   },
